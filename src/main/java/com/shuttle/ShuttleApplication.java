@@ -9,5 +9,4 @@ public class ShuttleApplication {
     public static void main(String[] args) {
         SpringApplication.run(ShuttleApplication.class, args);
     }
-
 }
