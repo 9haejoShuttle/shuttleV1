@@ -18,6 +18,9 @@ public class Admin {
 
     private boolean enable;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @Builder
     public Admin(String name, String password) {
         this.name = name;
