@@ -1,7 +1,7 @@
 package com.shuttle.admin.service;
 
 import com.shuttle.admin.domain.Category;
-import com.shuttle.admin.dto.CategorySaveRequestDto;
+import com.shuttle.admin.dto.CategoryDto;
 import com.shuttle.admin.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public void saveCategory(CategorySaveRequestDto categorySaveRequestDto) {
+    public void saveCategory(CategoryDto categorySaveRequestDto) {
         categoryRepository.save(categorySaveRequestDto.toEntity());
     }
 

@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Builder
 @Getter @Setter
-public class CategorySaveRequestDto {
+public class CategoryDto {
     private String categoryName;
     private String memo;
 

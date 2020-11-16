@@ -1,6 +1,6 @@
 package com.shuttle.admin.controller;
 
-import com.shuttle.admin.dto.CategorySaveRequestDto;
+import com.shuttle.admin.dto.CategoryDto;
 import com.shuttle.admin.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ui.Model;
@@ -12,7 +12,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping("/api/category")
-    public void addCategory(@RequestBody CategorySaveRequestDto categorySaveRequestDto, Model model) {
+    public void addCategory(@RequestBody CategoryDto categorySaveRequestDto, Model model) {
         categoryService.saveCategory(categorySaveRequestDto);
     }
 

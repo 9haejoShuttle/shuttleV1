@@ -2,16 +2,14 @@ package com.shuttle.admin.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shuttle.admin.domain.Category;
-import com.shuttle.admin.dto.CategorySaveRequestDto;
+import com.shuttle.admin.dto.CategoryDto;
 import com.shuttle.admin.repository.CategoryRepository;
 import com.shuttle.admin.service.CategoryService;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -39,7 +37,7 @@ class CategoryControllerTest {
     @DisplayName("카테고리 등록")
     @Test
     void test_addCategory() throws Exception {
-        CategorySaveRequestDto dto = CategorySaveRequestDto.builder()
+        CategoryDto dto = CategoryDto.builder()
                 .categoryName("자유 게시판")
                 .memo("로그인한 유저만 작성 가능")
                 .build();
@@ -62,7 +60,7 @@ class CategoryControllerTest {
     @Test
     void test_delete_category() throws Exception {
         //등록하고 등록 잘 되었는지 확인
-        CategorySaveRequestDto dto = CategorySaveRequestDto.builder()
+        CategoryDto dto = CategoryDto.builder()
                 .categoryName("자유 게시판")
                 .memo("로그인한 유저만 작성 가능")
                 .build();
