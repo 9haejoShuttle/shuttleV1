@@ -64,22 +64,17 @@ class CategoryControllerTest {
                 .categoryName("자유 게시판")
                 .memo("로그인한 유저만 작성 가능")
                 .build();
-        categoryService.saveCategory(dto);
 
-        List<Category> categoryList = categoryService.getCategories();
+        Category newCategory = categoryRepository.save(dto.toEntity());
 
-        assertThat(categoryRepository.findById(1L)).isNotEmpty();
+        assertThat(categoryRepository.findById(newCategory.getId())).isNotEmpty();
 
-        //삭제
-        Long categoryId = categoryList.get(0).getId();
-        mockMvc.perform(delete("/api/category/" + categoryId)
-        .contentType(MediaType.APPLICATION_JSON_UTF8)
-        .content(new ObjectMapper().writeValueAsString(categoryId)))
+        mockMvc.perform(delete("/api/category/"+newCategory.getId())
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(new ObjectMapper().writeValueAsString(dto)))
                 .andExpect(status().isOk());
 
-        System.out.println(categoryRepository.findById(1L));
+        assertThat(categoryRepository.findById(newCategory.getId())).isEmpty();
 
-        //삭제 확인
-        assertThat(categoryRepository.findById(1L)).isEmpty();
     }
 }

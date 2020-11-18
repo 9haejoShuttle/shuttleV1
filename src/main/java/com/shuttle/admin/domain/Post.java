@@ -14,8 +14,8 @@ public class Post {
     @Column(name = "POST_ID")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "CATEGORY_ID", nullable = false)
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "CATEGORY_ID", nullable = true)
     private Category category;
 
     @Column(nullable = false)
