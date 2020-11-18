@@ -19,11 +19,11 @@ public class AdminController {
 	private final AdminService adminService;
 	private final PostService postService;
 
-	@PostMapping("/admin/new")
+	@PostMapping("/admin/signup")
 	public String saveAdmin(@Valid AdminSaveDto adminSaveDto) {
 		adminService.save(adminSaveDto);
 
-		return "redirect:/admin/new";
+		return "redirect:/";
 	}
 
 	@GetMapping("admin/login")

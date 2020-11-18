@@ -12,10 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -38,6 +40,7 @@ class CategoryControllerTest {
     }
 
     @DisplayName("카테고리 등록")
+    @WithMockUser(roles = "ADMIN")
     @Test
     void test_addCategory() throws Exception {
         //등록을 요청할 RequestDto
@@ -52,6 +55,7 @@ class CategoryControllerTest {
         *   request 데이터를 JSON으로 전송한다.(@RestController이기 때문에 JSON타입으로 요청해야 함)
          * */
         mockMvc.perform(post("/api/category")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(new ObjectMapper().writeValueAsString(requestDto)))
                 .andExpect(status().isOk());
@@ -69,6 +73,7 @@ class CategoryControllerTest {
     }
 
     @DisplayName("카테고리 수정")
+    @WithMockUser(roles = "ADMIN")
     @Test
     void test_update_category() throws Exception {
         //수정 요청 데이터
@@ -85,6 +90,7 @@ class CategoryControllerTest {
         *   요청 데이터를 JSON타입으로 바꿔서 전송한다.
         * */
         mockMvc.perform(put("/api/category/"+updateTargetCategory.getId())
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(new ObjectMapper().writeValueAsString(updateRequestDto)))
                 .andExpect(status().isOk());
@@ -100,6 +106,7 @@ class CategoryControllerTest {
     }
 
     @DisplayName("카테고리 삭제")
+    @WithMockUser(roles = "ADMIN")
     @Test
     void test_delete_category() throws Exception {
         //삭제할 카테고리를 불러온다.
@@ -109,7 +116,8 @@ class CategoryControllerTest {
         assertThat(categoryRepository.findById(newCategory.getId())).isNotEmpty();
 
         //삭제 api호출
-        mockMvc.perform(delete("/api/category/"+newCategory.getId()))
+        mockMvc.perform(delete("/api/category/"+newCategory.getId())
+                .with(csrf()))
                 .andExpect(status().isOk());
 
         //삭제 되었는지 확인
