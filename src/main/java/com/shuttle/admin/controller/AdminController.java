@@ -18,8 +18,7 @@ public class AdminController {
 	@PostMapping("/admin/new")
 	public String saveAdmin(@Valid AdminSaveDto adminSaveDto) {
 		adminService.save(adminSaveDto);
-		
-		
+
 		return "redirect:/admin/new";
 	}
 	

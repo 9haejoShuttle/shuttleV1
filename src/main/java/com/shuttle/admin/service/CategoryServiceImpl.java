@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Transactional
+@Transactional  //JPA 엔티티는 트랜잭션 안에서만 영속가 된다.
 @RequiredArgsConstructor
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -17,6 +17,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Long saveCategory(CategoryDto categorySaveRequestDto) {
+        //카테고리를 등록하고, id값을 반환한다.
         return categoryRepository.save(categorySaveRequestDto.toEntity()).getId();
     }
 
@@ -34,15 +35,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void updateCategory(CategoryDto categoryDto, Long id) {
+        //입력 받은 id값을 가진 카테고리를 조회하고, 없다면 예외를 날리고 있다면 Category타입으로 저장한다.
         Category updateTargetCatgory = categoryRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(id+"번 카테고리가 존재하지 않습니다."));
 
-//        생성자로는 업데이트가 안 되고 따로 정의한 메서드로만 업데이트가 되는 이유가 뭘까?
-//        updateTargetCatgory = Category.builder()
-//                .categoryName(categoryDto.getCategoryName())
-//                .memo(categoryDto.getMemo())
-//                .build();
-
+        //업데이트 요청 받은 값으로 엔티티의 상태를 변경한다.
         updateTargetCatgory.update(categoryDto.getCategoryName(), categoryDto.getMemo());
     }
 }

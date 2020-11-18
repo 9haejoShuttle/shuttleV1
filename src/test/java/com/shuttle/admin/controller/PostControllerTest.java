@@ -46,9 +46,15 @@ class PostControllerTest {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @AfterEach
+    void deleteAll() {  //테스트가 끝날 때마다 DB데이터 초기화
+        postRepository.deleteAll();
+    }
+
     @DisplayName("게시물 등록")
     @Test
     void test_savePost() throws Exception {
+        //게시물 등록을 요청하는 데이터
         PostSaveRequestDto saveRequest = PostSaveRequestDto.builder()
                 .category(new Category("자유 게시판", "메모 없음"))
                 .title("yo title")
@@ -56,27 +62,35 @@ class PostControllerTest {
                 .userId(1L)
                 .build();
 
+        /*
+        *   등록 API호출
+        *   가상 환경에서 post요청으로 등록을 처리하는 api를 호출
+        *   ObjectMapper의 writeValueAsString()메서드를 이용해서 request 데이터를 JSON으로 전송한다.
+        *   (요청 API가 있는 컨트롤러가 @RestController이기 때문에 JSON타입으로 요청해야 함)
+        * */
         mockMvc.perform(post("/api/post")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(new ObjectMapper().writeValueAsString(saveRequest)))
                 .andExpect(status().isOk());
 
-        Post newPost = postRepository.findAll().get(0);
+        //등록된 포스트 가져오기
+        Post savedPost = postRepository.findAll().get(0);
 
-        assertThat(newPost.getId())
+        //등록된 포스트가, 요청 받은 데이터와 일치하는지 테스트
+        assertThat(savedPost.getId())
                 .isNotNull();
-        assertThat(newPost.getCategory().getCategoryName())
+        assertThat(savedPost.getCategory().getCategoryName())
                 .isEqualTo(saveRequest.getCategory().getCategoryName());
-        assertThat(newPost.getTitle())
+        assertThat(savedPost.getTitle())
                 .isEqualTo(saveRequest.getTitle());
-        assertThat(newPost.getUserId())
+        assertThat(savedPost.getUserId())
                 .isEqualTo(saveRequest.getUserId());
     }
 
     @DisplayName("게시물 조회")
     @Test
     void test_findByEmail() throws Exception {
-        addPost();
+        addPost(); //게시물 등록
         mockMvc.perform(get("/api/post/"+getId()))
                 .andExpect(status().isOk())
                 .andDo(print());
@@ -86,10 +100,11 @@ class PostControllerTest {
     @DisplayName("게시물 수정")
     @Test
     void test_update_post() throws Exception {
-        addPost();
+        addPost();  //게시물 등록
 
         Category category = categoryRepository.findAll().get(0);
 
+        //수정 요청 데이터
         PostSaveRequestDto requestDto = PostSaveRequestDto.builder()
                 .userId(1L)
                 .category(category)
@@ -97,12 +112,17 @@ class PostControllerTest {
                 .content("content update")
                 .build();
 
-        System.out.println(getId());
+        /*
+        *   put매핑 되어 있는 수정 API를 호출
+        *   JSON타입 데이터를 보낸다고 명시하고,
+        *   ObjectMapper의 wrtieValueAsString()로 요청 데이터를 JSON으로 변환해서 전달한다.
+        * */
         mockMvc.perform(put("/api/post/"+getId())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(new ObjectMapper().writeValueAsString(requestDto)))
                 .andExpect(status().isOk());
 
+        //업데이트된 포스트 불러오기
         Post updatedPost = postRepository.findById(getId()).get();
 
         System.out.println("-------------------------------------------------------");
@@ -110,6 +130,7 @@ class PostControllerTest {
         System.out.println("requestDto.getTitle  : " + requestDto.getTitle());
         System.out.println("-------------------------------------------------------");
 
+        //업데이트 된 포스트와 업데이트 요청 받은 DTO의 데이터가 일치하는지 확인
         assertThat(updatedPost.getTitle()).isEqualTo(requestDto.getTitle());
         assertThat(updatedPost.getTitle()).isEqualTo(requestDto.getTitle());
         assertThat(updatedPost.getCategory().getCategoryName()).isEqualTo(requestDto.getCategory().getCategoryName());
@@ -119,7 +140,7 @@ class PostControllerTest {
     @DisplayName("게시물 삭제")
     @Test
     void test_delete_Post() throws Exception {
-        addPost();
+        addPost(); //게시물 등록
         assertThat(postRepository.findById(1L)).isNotEmpty();
 
         mockMvc.perform(delete("/api/post/"+1))

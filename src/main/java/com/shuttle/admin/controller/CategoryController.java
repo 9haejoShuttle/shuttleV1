@@ -27,7 +27,4 @@ public class CategoryController {
         categoryService.updateCategory(categoryDto, id);
         return id;
     }
-
-
-
 }
