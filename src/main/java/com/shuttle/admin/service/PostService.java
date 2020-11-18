@@ -4,6 +4,8 @@ import com.shuttle.admin.dto.PostResponseDto;
 import com.shuttle.admin.dto.PostSaveRequestDto;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 public interface PostService {
     public Long postSave(PostSaveRequestDto postRequestSaveDto);
     public PostResponseDto findByPost(Long id);
@@ -11,4 +13,6 @@ public interface PostService {
     Long updatePost(PostSaveRequestDto requestDto, Long id);
 
     void deletePost(Long id);
+
+    List<PostResponseDto> allPost();
 }
