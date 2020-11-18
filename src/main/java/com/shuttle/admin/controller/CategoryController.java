@@ -12,8 +12,8 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping("/api/category")
-    public void addCategory(@RequestBody CategoryDto categorySaveRequestDto, Model model) {
-        categoryService.saveCategory(categorySaveRequestDto);
+    public void addCategory(@RequestBody CategoryDto categoryDto, Model model) {
+        categoryService.saveCategory(categoryDto);
     }
 
     @DeleteMapping("/api/category/{id}")
@@ -21,13 +21,12 @@ public class CategoryController {
         categoryService.deleteCategory(id);
     }
 
-/*
-    사용할 필요가 있다면 CategoryUpdateRequestDto를 따로 만들어야 할 것 같다.
-    update할 때는 id를 확인하는 필드가 필요한데 SaveDto에는 id필드가 없다.
-    @PutMapping("/category/{id}")
-    public void updateCategory(@RequestBody CategorySaveRequestDto categorySaveRequestDto) {
-        categoryService.saveCategory(categorySaveRequestDto);
-    }*/
+
+    @PutMapping("/api/category/{id}")
+    public Long updateCategory(@RequestBody CategoryDto categoryDto,@PathVariable Long id) {
+        categoryService.updateCategory(categoryDto, id);
+        return id;
+    }
 
 
 

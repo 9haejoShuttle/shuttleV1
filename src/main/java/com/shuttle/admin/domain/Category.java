@@ -26,4 +26,9 @@ public class Category {
         this.memo = memo;
     }
 
+    public void update(String categoryName, String memo) {
+        this.categoryName = categoryName;
+        this.memo = memo;
+    }
+
 }
