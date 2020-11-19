@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시물 관리</title>
+</head>
+<body>
+    <div>
+        <table border="1px" align="center">
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>내용</th>
+                <th>작성자</th>
+            </tr>
+            <tr th:each="post : ${posts}">
+                <td>[[${post.id}]]</td>
+                <td>[[${post.title}]]</td>
+                <td>[[${post.content}]]</td>
+                <td>[[${post.userId}]]</td>
+            </tr>
+
+        </table>
+
+    </div>
+</body>
+</html>

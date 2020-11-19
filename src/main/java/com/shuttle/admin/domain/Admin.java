@@ -2,10 +2,12 @@ package com.shuttle.admin.domain;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Getter
+@NoArgsConstructor
 @Entity
 public class Admin {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,12 +20,13 @@ public class Admin {
 
     private boolean enable;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @Builder
     public Admin(String name, String password) {
         this.name = name;
         this.password = password;
         enable = true;
     }
-
-    public Admin() {}
 }
