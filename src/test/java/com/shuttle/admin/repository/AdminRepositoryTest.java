@@ -1,6 +1,7 @@
 package com.shuttle.admin.repository;
 
 import com.shuttle.admin.domain.Admin;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +14,6 @@ public class AdminRepositoryTest {
 
     @Test
     void test_add_admin() {
-        Admin admin = new Admin();
+        System.out.println("test");
     }
 }
