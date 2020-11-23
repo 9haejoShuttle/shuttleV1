@@ -1,6 +1,7 @@
 package com.shuttle.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -30,4 +31,13 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Builder
+    public User(String phone, String name, String password, String email){
+        this.phone = phone;
+        this.email = email;
+        this.password = password;
+        this.name =name;
+        this.enable = true;
+    }
 }
