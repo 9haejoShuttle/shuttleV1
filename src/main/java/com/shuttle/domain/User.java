@@ -14,7 +14,7 @@ public class User {
     @Column(name = "USER_ID")
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private String phone;
 
     @Column(nullable = false)
@@ -39,5 +39,13 @@ public class User {
         this.password = password;
         this.name =name;
         this.enable = true;
+        this.role = Role.USER;
+    }
+
+    public String getRoleKey() {
+        System.out.println("role : " + role);
+        System.out.println("role : " + role.getTitle());
+        System.out.println("role : " + role.getKey());
+        return this.role.getKey();
     }
 }

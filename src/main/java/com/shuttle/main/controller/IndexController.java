@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Log4j2
 @EnableAutoConfiguration(exclude = {SecurityAutoConfiguration.class})
 public class IndexController {
-    @GetMapping({ "index","/index"})
-    public void index(){
-        log.info("GET index.......");
+    @GetMapping("/")
+    public String index(){
+        return "index";
     }
 }

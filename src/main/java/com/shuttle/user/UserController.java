@@ -1,8 +1,6 @@
 package com.shuttle.user;
 
-import com.shuttle.domain.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,5 +22,10 @@ public class UserController {
         //가입한 이름을 리턴해서 화면에 띄운다.
         String newUserName = userService.signup(userSignupRequestDto);
         return newUserName;
+    }
+
+    @GetMapping("/login")
+    public String login() {
+        return "login";
     }
 }
