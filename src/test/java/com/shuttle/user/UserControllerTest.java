@@ -3,6 +3,8 @@ package com.shuttle.user;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shuttle.domain.User;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -36,13 +39,28 @@ class UserControllerTest {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    final static String PLAINT_TEXT_PASSWORD = "12345678";
+    final static String USER_PHONE = "01012341234";
+    final static String USER_NAME = "cocoboy";
+
+    @BeforeEach
+    void addUser() {
+        User newUser = User.builder()
+                .phone(USER_PHONE)
+                .name(USER_NAME)
+                .password(passwordEncoder.encode(PLAINT_TEXT_PASSWORD))
+                .build();
+
+        userRepository.save(newUser);
+    }
+
     @DisplayName("회원가입 테스트")
     @Test
     void test_signupSubmit() throws Exception {
         UserSignupRequestDto userSignupRequestDto = UserSignupRequestDto.builder()
                 .phone("01000000000")
-                .password("12345678")
-                .name("cocoboy")
+                .password(PLAINT_TEXT_PASSWORD)
+                .name(USER_NAME)
                 .build();
 
         mockMvc.perform(post("/signup")
@@ -59,27 +77,29 @@ class UserControllerTest {
         assertNotEquals(userSignupRequestDto.getPassword(), newUser.getPassword());
     }
 
-    @DisplayName("로그인 테스트")
+    @DisplayName("로그인 테스트 - 성공")
     @Test
     void test_loginSubmit() throws Exception {
-        String plainTextPassword = "01012341234";
-
-        User newUser = User.builder()
-                .phone("01012341234")
-                .name("cocoboy")
-                .password(passwordEncoder.encode(plainTextPassword))
-                .build();
-
-        userRepository.save(newUser);
-
         mockMvc.perform(post("/login")
                 .with(csrf())
-                .param("username", newUser.getPhone())
-                .param("password", plainTextPassword))
+                .param("username", USER_PHONE)
+                .param("password", PLAINT_TEXT_PASSWORD))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"))
-                .andExpect(authenticated().withUsername(newUser.getPhone()));
+                .andExpect(authenticated().withUsername(USER_PHONE));
 
+    }
+
+    @DisplayName("로그인 테스트 - 실패 - 아이디 또는 비밀번호 틀릴 경우")
+    @Test
+    void test_loginfailure() throws Exception {
+        mockMvc.perform(post("/login")
+                .with(csrf())
+                .param("username", "wrongUsername")
+                .param("password", PLAINT_TEXT_PASSWORD))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login?error"))
+                .andExpect(unauthenticated());
     }
 
 }
