@@ -8,6 +8,7 @@ import com.shuttle.category.CategoryRepository;
 import com.shuttle.post.PostRepository;
 import com.shuttle.post.PostService;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,11 @@ class PostControllerTest {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @BeforeEach
+    void before() {
+        categoryRepository.deleteAll();
+    }
 
     @AfterEach
     void deleteAll() {  //테스트가 끝날 때마다 DB데이터 초기화
@@ -101,12 +107,9 @@ class PostControllerTest {
     void test_update_post() throws Exception {
         addPost();  //게시물 등록
 
-        Category category = categoryRepository.findAll().get(0);
-
         //수정 요청 데이터
         PostSaveRequestDto requestDto = PostSaveRequestDto.builder()
                 .userId(1L)
-                .category(category)
                 .title("title update test")
                 .content("content update")
                 .build();
@@ -125,6 +128,9 @@ class PostControllerTest {
         //업데이트된 포스트 불러오기
         Post updatedPost = postRepository.findById(getId()).get();
 
+        Category getCategory = updatedPost.getCategory();
+        System.out.println("getCategory::::::::::" + getCategory.getCategoryName());
+
         System.out.println("-------------------------------------------------------");
         System.out.println("updatePost.getTitle  : " + updatedPost.getTitle());
         System.out.println("requestDto.getTitle  : " + requestDto.getTitle());
@@ -133,7 +139,7 @@ class PostControllerTest {
         //업데이트 된 포스트와 업데이트 요청 받은 DTO의 데이터가 일치하는지 확인
         assertThat(updatedPost.getTitle()).isEqualTo(requestDto.getTitle());
         assertThat(updatedPost.getTitle()).isEqualTo(requestDto.getTitle());
-        assertThat(updatedPost.getCategory().getCategoryName()).isEqualTo(requestDto.getCategory().getCategoryName());
+        assertThat(getCategory.getCategoryName()).isEqualTo("자유 게시판");
         assertThat(updatedPost.getContent()).isEqualTo(requestDto.getContent());
     }
 
@@ -142,13 +148,14 @@ class PostControllerTest {
     @Test
     void test_delete_Post() throws Exception {
         addPost(); //게시물 등록
-        assertThat(postRepository.findById(1L)).isNotEmpty();
+        Long id = getId();
+        assertThat(postRepository.findById(id)).isNotEmpty();
 
-        mockMvc.perform(delete("/api/post/"+1)
+        mockMvc.perform(delete("/api/post/"+id)
                 .with(csrf()))
                 .andExpect(status().isOk());
 
-        assertThat(postRepository.findById(1L)).isEmpty();
+        assertTrue(postRepository.findById(id).isEmpty());
     }
 
     Long getId() {
