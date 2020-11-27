@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -17,6 +18,12 @@ import javax.validation.Valid;
 public class UserController {
 
     private final UserService userService;
+    private final SignupValidator signupValidator;
+
+    @InitBinder("userSignupRequestDto")
+    public void initBinder(WebDataBinder webDataBinder) {
+        webDataBinder.addValidators(signupValidator);
+    }
 
     @GetMapping("/login")
     public String login() {
@@ -33,10 +40,9 @@ public class UserController {
     public String signupSubmit(@Valid UserSignupRequestDto userSignupRequestDto, Errors errors,
                                Model model, RedirectAttributes redirect) {
         if (errors.hasErrors()) {
-            System.out.println(errors);
+            model.addAttribute("errors", errors);
             return "signup";
         }
-        model.addAttribute("errors", errors);
 
         String newUserName = userService.signup(userSignupRequestDto);
         redirect.addFlashAttribute("message", newUserName+"님 가입을 축하합니다.");

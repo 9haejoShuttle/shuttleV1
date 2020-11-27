@@ -22,13 +22,6 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @Controller
 public class IndexController {
-    private final UserService userService;
-    private final SignupValidator signupValidator;
-
-    @InitBinder("userSignupRequestDto")
-    public void initBinder(WebDataBinder webDataBinder) {
-        webDataBinder.addValidators(signupValidator);
-    }
 
     @GetMapping("/")
     public String index(@CurrentUser User user, Model model){

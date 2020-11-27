@@ -10,10 +10,8 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
+@NoArgsConstructor @AllArgsConstructor
+@Data @Builder
 public class UserSignupRequestDto {
     @NotBlank
     @Length(min = 8, max = 15)

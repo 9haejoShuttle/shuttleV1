@@ -10,9 +10,8 @@ public class AppConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         /*
-        *    참고 https://java.ihoney.pe.kr/498
-        * */
+         *    참고 https://java.ihoney.pe.kr/498
+         * */
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
-
 }
