@@ -1,5 +1,7 @@
 package com.shuttle.main;
 
+import com.shuttle.domain.User;
+import com.shuttle.user.CurrentUser;
 import com.shuttle.user.SignupValidator;
 import com.shuttle.user.UserService;
 import com.shuttle.user.UserSignupRequestDto;
@@ -29,7 +31,11 @@ public class IndexController {
     }
 
     @GetMapping("/")
-    public String index(){
+    public String index(@CurrentUser User user, Model model){
+        System.out.println("user : " + user);
+        if (user != null) {
+            model.addAttribute("user", user);
+        }
         return "index";
     }
 
