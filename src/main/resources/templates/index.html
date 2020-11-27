@@ -1,9 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"><head>
     <meta charset="UTF-8">
     <title>구해줘 셔틀 페이지입니다</title>
 </head>
 <body>
+<div sec:authorize="isAuthenticated()">
+    <h1>환영합니다.</h1>
+</div>
+
+<div sec:authorize="isAnonymous()">
+    <h1>
+        <a href="/login">로그인</a>
+    </h1>
+</div>
+
 </body>
 </html>

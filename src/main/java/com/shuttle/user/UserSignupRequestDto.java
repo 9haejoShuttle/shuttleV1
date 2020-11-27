@@ -8,8 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.*;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Builder
@@ -26,9 +24,9 @@ public class UserSignupRequestDto {
     private String password;
 
     @NotBlank
-    private String name;
+    @Length(min = 8, max = 50)
+    private String passwordConfirm;
 
     @NotBlank
-    @Email
-    private String email;
+    private String name;
 }

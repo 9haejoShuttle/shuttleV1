@@ -43,9 +43,6 @@ public class User {
     }
 
     public String getRoleKey() {
-        System.out.println("role : " + role);
-        System.out.println("role : " + role.getTitle());
-        System.out.println("role : " + role.getKey());
         return this.role.getKey();
     }
 }

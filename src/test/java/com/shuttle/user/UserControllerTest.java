@@ -41,7 +41,7 @@ class UserControllerTest {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    final static String PLAINT_TEXT_PASSWORD = "12345678";
+    final static String PLAIN_TEXT_PASSWORD = "12345678";
     final static String USER_PHONE = "01012341234";
     final static String USER_NAME = "cocoboy";
 
@@ -50,7 +50,7 @@ class UserControllerTest {
         User newUser = User.builder()
                 .phone(USER_PHONE)
                 .name(USER_NAME)
-                .password(passwordEncoder.encode(PLAINT_TEXT_PASSWORD))
+                .password(passwordEncoder.encode(PLAIN_TEXT_PASSWORD))
                 .build();
 
         userRepository.save(newUser);
@@ -64,24 +64,39 @@ class UserControllerTest {
     @DisplayName("회원가입 테스트")
     @Test
     void test_signupSubmit() throws Exception {
-        UserSignupRequestDto userSignupRequestDto = UserSignupRequestDto.builder()
-                .phone("01000000000")
-                .password(PLAINT_TEXT_PASSWORD)
-                .name(USER_NAME)
-                .build();
-
+        String phone = "01000000000";
+        String name = "bobo";
         mockMvc.perform(post("/signup")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(objectMapper.writeValueAsString(userSignupRequestDto))
-                .with(csrf()))
-                .andExpect(status().isOk());
+        .param("phone", phone)
+        .param("password", PLAIN_TEXT_PASSWORD)
+        .param("passwordConfirm", PLAIN_TEXT_PASSWORD)
+        .param("name", name)
+        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"))
+                .andExpect(flash().attributeExists("message"));
 
         User newUser = userRepository.findByPhone("01000000000").get();
 
-        assertEquals(userSignupRequestDto.getPhone(), newUser.getPhone());
-        assertEquals(userSignupRequestDto.getName(), newUser.getName());
-        //패스워드 인코딩이 되었다면 요청한 비밀번호와 달라야 함.
-        assertNotEquals(userSignupRequestDto.getPassword(), newUser.getPassword());
+        assertEquals(newUser.getPhone(), phone);
+        assertNotEquals(newUser.getPassword(), PLAIN_TEXT_PASSWORD);
+        assertEquals(newUser.getName(), name);
+    }
+
+    @DisplayName("회원가입 테스트 - 잘못된 값 요청 시 Validator")
+    @Test
+    void test_signup_failure() throws Exception {
+        String phone = "01000000000";
+        String name = "bobo";
+        mockMvc.perform(post("/signup")
+                .param("phone", phone)
+                .param("password", PLAIN_TEXT_PASSWORD)
+                .param("passwordConfirm", "12333333")
+                .param("name", name)
+                .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("errors"))
+                .andExpect(view().name("signup"));
     }
 
     @DisplayName("로그인 테스트 - 성공")
@@ -90,7 +105,7 @@ class UserControllerTest {
         mockMvc.perform(post("/login")
                 .with(csrf())
                 .param("username", USER_PHONE)
-                .param("password", PLAINT_TEXT_PASSWORD))
+                .param("password", PLAIN_TEXT_PASSWORD))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"))
                 .andExpect(authenticated().withUsername(USER_PHONE));
@@ -103,7 +118,7 @@ class UserControllerTest {
         mockMvc.perform(post("/login")
                 .with(csrf())
                 .param("username", "wrongUsername")
-                .param("password", PLAINT_TEXT_PASSWORD))
+                .param("password", PLAIN_TEXT_PASSWORD))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login?error"))
                 .andExpect(unauthenticated());
