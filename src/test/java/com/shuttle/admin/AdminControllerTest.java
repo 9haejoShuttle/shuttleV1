@@ -11,6 +11,7 @@ import com.shuttle.domain.Admin;
 import com.shuttle.domain.Post;
 import com.shuttle.admin.AdminRepository;
 import com.shuttle.post.PostRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,6 +38,11 @@ public class AdminControllerTest {
 	@BeforeEach
 	void testBefore() {
 		adminRepository.deleteAll();
+	}
+
+	@AfterEach
+	void testAfter() {
+		postRepository.deleteAll();
 	}
 
 	@DisplayName("관리자 등록")

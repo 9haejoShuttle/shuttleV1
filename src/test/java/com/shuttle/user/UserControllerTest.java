@@ -2,6 +2,7 @@ package com.shuttle.user;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.shuttle.domain.Role;
 import com.shuttle.domain.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -52,6 +54,11 @@ class UserControllerTest {
                 .build();
 
         userRepository.save(newUser);
+    }
+
+    @AfterEach
+    void deleteUser() {
+        userRepository.deleteAll();
     }
 
     @DisplayName("회원가입 테스트")
@@ -100,6 +107,14 @@ class UserControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login?error"))
                 .andExpect(unauthenticated());
+    }
+
+    @DisplayName("비밀번호 변경")
+    @WithUserDetails(USER_PHONE)
+    //@Test
+    void test_passwordUpdate() throws Exception {
+        mockMvc.perform(post("/mypage/"+USER_PHONE+"/password")
+        .with(csrf()));
     }
 
 }
