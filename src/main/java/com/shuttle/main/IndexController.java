@@ -39,29 +39,6 @@ public class IndexController {
         return "index";
     }
 
-    @GetMapping("/login")
-    public String login() {
-        return "login";
-    }
 
-    @GetMapping("/signup")
-    public String signupForm(Model model) {
-        model.addAttribute("userSignupRequestDto", new UserSignupRequestDto());
-        return "signup";
-    }
-
-    @PostMapping("/signup")
-    public String signupSubmit(@Valid UserSignupRequestDto userSignupRequestDto, Errors errors,
-                               Model model, RedirectAttributes redirect) {
-        if (errors.hasErrors()) {
-            System.out.println(errors);
-            return "signup";
-        }
-            model.addAttribute("errors", errors);
-
-        String newUserName = userService.signup(userSignupRequestDto);
-        redirect.addFlashAttribute("message", newUserName+"님 가입을 축하합니다.");
-        return "redirect:/";
-    }
 
 }

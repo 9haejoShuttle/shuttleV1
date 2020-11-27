@@ -3,26 +3,56 @@ package com.shuttle.user;
 import com.shuttle.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.validation.Valid;
 
 @RequiredArgsConstructor
-@RestController
+@Controller
 public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/mypage/{phone}/password")
-    public void passwordUpdateForm() {
-        /* TODO
-        *   1. 현재 로그인 중인지 체크
-        *   2. 로그인되어 있는 정보를 화면으로 보낸다.
-        *   3. 비밀번호 변경 폼을 화면으로 보낸다.
-        * */
+    @GetMapping("/login")
+    public String login() {
+        return "login";
     }
 
-    @PostMapping("/mypage/{phone}/password")
+    @GetMapping("/signup")
+    public String signupForm(Model model) {
+        model.addAttribute("userSignupRequestDto", new UserSignupRequestDto());
+        return "signup";
+    }
+
+    @PostMapping("/signup")
+    public String signupSubmit(@Valid UserSignupRequestDto userSignupRequestDto, Errors errors,
+                               Model model, RedirectAttributes redirect) {
+        if (errors.hasErrors()) {
+            System.out.println(errors);
+            return "signup";
+        }
+        model.addAttribute("errors", errors);
+
+        String newUserName = userService.signup(userSignupRequestDto);
+        redirect.addFlashAttribute("message", newUserName+"님 가입을 축하합니다.");
+        return "redirect:/";
+    }
+
+    @GetMapping("/mypage")
+    public String mypageIndex(@CurrentUser User user, Model model) {
+        if (user != null) {
+            model.addAttribute("user", user);
+        }
+        return "mypage/info";
+    }
+
+
+    @PostMapping("/password")
     public void passwordUpdateSubmit(@CurrentUser User user) {
         /* TODO
          *   1. 어떤 계정으로 로그인되어 있는지 확인
@@ -33,5 +63,16 @@ public class UserController {
         System.out.println(user);
         System.out.println(user.getPhone());
         System.out.println(user.getName());
+    }
+
+    @GetMapping("/mypage/password")
+    @ResponseBody
+    public ResponseEntity<String> passwordUpdateForm() {
+        /* TODO
+         *   1. 현재 로그인 중인지 체크
+         *   2. 로그인되어 있는 정보를 화면으로 보낸다.
+         *   3. 비밀번호 변경 폼을 화면으로 보낸다.
+         * */
+        return new ResponseEntity<String>("aasdf", HttpStatus.OK);
     }
 }
