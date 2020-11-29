@@ -51,34 +51,26 @@ public class UserController {
 
     @GetMapping("/mypage")
     public String mypageIndex(@CurrentUser User user, Model model) {
-        if (user != null) {
-            model.addAttribute("user", user);
-        }
+        /*
+        *   TODO
+        *    마이페이지에서 첫 번째로 띄워야 할 정보
+        *       - 사용자 정보.
+        *       - 내 예약 현황(apply) 혹은 이용 중인 노선
+        * */
+
         return "mypage/info";
     }
 
-
-    @PostMapping("/password")
-    public void passwordUpdateSubmit(@CurrentUser User user) {
-        /* TODO
-         *   1. 어떤 계정으로 로그인되어 있는지 확인
-         *   2. 비밀번호 변경 요청 폼을 받아서 Validator로 검사
-         *   3. 통과하지 못하면 다시 변경 폼으로 리턴
-         *   4. 통과한다면 비밀번호 변경작업
-         * */
-        System.out.println(user);
-        System.out.println(user.getPhone());
-        System.out.println(user.getName());
+    @GetMapping("/mypage/password")
+    public String passwordUpdateForm(@CurrentUser User user) {
+        return "mypage/password";
     }
 
-    @GetMapping("/mypage/password")
+    @PutMapping("/mypage/password")
     @ResponseBody
-    public ResponseEntity<String> passwordUpdateForm() {
-        /* TODO
-         *   1. 현재 로그인 중인지 체크
-         *   2. 로그인되어 있는 정보를 화면으로 보낸다.
-         *   3. 비밀번호 변경 폼을 화면으로 보낸다.
-         * */
-        return new ResponseEntity<String>("aasdf", HttpStatus.OK);
+    public ResponseEntity passwordUpdateSubmit(@CurrentUser User user, @Valid @RequestBody PasswordUpdateRequestDto passwordUpdateRequestForm,
+                                               Errors errors, RedirectAttributes redirect) {
+        userService.updatePassword(user, passwordUpdateRequestForm);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

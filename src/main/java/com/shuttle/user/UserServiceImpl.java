@@ -36,6 +36,12 @@ public class UserServiceImpl implements UserService {
         return newUser.getName();
     }
 
+    @Override
+    public void updatePassword(User user, PasswordUpdateRequestDto passwordUpdateRequestForm) {
+        User targetUser = userRepository.findById(user.getId()).get();
+        targetUser.updatePassword(passwordEncoder.encode(passwordUpdateRequestForm.getPassword()));
+    }
+
     public void login(User user) {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                 new UserAccount(user),

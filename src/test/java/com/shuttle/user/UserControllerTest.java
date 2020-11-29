@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shuttle.domain.Role;
 import com.shuttle.domain.User;
+import com.shuttle.user.util.WithAccount;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,6 +23,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -123,13 +125,29 @@ class UserControllerTest {
                 .andExpect(redirectedUrl("/login?error"))
                 .andExpect(unauthenticated());
     }
+    
+    @DisplayName("비밀번호 변경 - 성공")
+    @WithAccount("010111122222")
+    @Test
+    void test_passwordUpdate_submit() throws Exception {
+        PasswordUpdateRequestDto passwordUpdateRequestDto = new PasswordUpdateRequestDto();
+        passwordUpdateRequestDto.setPassword("asdf1234");
+        passwordUpdateRequestDto.setPasswordConfirm("asdf1234");
 
-    @DisplayName("비밀번호 변경")
-    @WithUserDetails(USER_PHONE)
-    //@Test
-    void test_passwordUpdate() throws Exception {
-        mockMvc.perform(post("/mypage/"+USER_PHONE+"/password")
-        .with(csrf()));
+
+        User beforeUpdateUser = userRepository.findByPhone("010111122222").get();
+
+        mockMvc.perform(put("/mypage/password")
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .content(objectMapper.writeValueAsString(passwordUpdateRequestDto)))
+                .andExpect(status().isOk());
+
+
+        User passwordUpdatedUser = userRepository.findByPhone("010111122222").get();
+
+        assertNotEquals(beforeUpdateUser.getPassword(), passwordUpdatedUser.getPassword());
     }
+
+
 
 }
