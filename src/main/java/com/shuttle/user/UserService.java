@@ -8,4 +8,6 @@ public interface UserService extends UserDetailsService {
     String signup(UserSignupRequestDto userSignupRequestDto);
 
     void updatePassword(User user, PasswordUpdateRequestDto passwordUpdateRequestDto);
+
+    void disable(User user);
 }

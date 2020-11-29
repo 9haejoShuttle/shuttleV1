@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -111,6 +112,23 @@ class UserControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"))
                 .andExpect(authenticated().withUsername(USER_PHONE));
+    }
+    
+    @DisplayName("로그인 테스트 - 비활성화(탈퇴)한 유저 로그인 처리")
+    @Transactional
+    @WithAccount("01009876543")
+    @Test
+    void test_login_failure() throws Exception {
+        User user = userRepository.findByPhone("01009876543").orElseThrow();
+        user.setEnable(false);
+
+        mockMvc.perform(post("/login")
+                .with(csrf())
+                .param("username", "01009876543")
+                .param("password", "12345678"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login?error"))
+                .andExpect(unauthenticated());
 
     }
 
@@ -161,6 +179,23 @@ class UserControllerTest {
                 .content(objectMapper.writeValueAsString(passwordUpdateRequestDto))
                 .with(csrf()))
                 .andExpect(status().isInternalServerError());
+    }
+    
+    @DisplayName("회원탈퇴")
+    @WithAccount("010111122222")
+    @Test
+    void test_disableUser_success() throws Exception {
+
+        User targetUser = userRepository.findByPhone("010111122222").orElseThrow();
+
+        assertTrue(targetUser.isEnable());
+
+        mockMvc.perform(put("/mypage/account"))
+                .andExpect(status().isOk());
+
+        User user = userRepository.findByPhone("010111122222").orElseThrow();
+
+        assertFalse(user.isEnable());
     }
 
 

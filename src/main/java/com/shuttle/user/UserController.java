@@ -83,4 +83,16 @@ public class UserController {
         userService.updatePassword(user, passwordUpdateRequestDto);
         return new ResponseEntity(HttpStatus.OK);
     }
+
+    @GetMapping("/mypage/account")
+    public String disableUserForm(@CurrentUser User user) {
+        return "mypage/delete";
+    }
+
+    @PutMapping("/mypage/account")
+    @ResponseBody
+    public ResponseEntity disableUserSubmit(@CurrentUser User user) {
+        userService.disable(user);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 }

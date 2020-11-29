@@ -42,6 +42,14 @@ public class UserServiceImpl implements UserService {
         targetUser.updatePassword(passwordEncoder.encode(passwordUpdateRequestDto.getPassword()));
     }
 
+    @Override
+    public void disable(User user) {
+        User targetUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new IllegalArgumentException(user.getName() + "존재하지 않는 유저입니다."));
+
+        targetUser.setEnable(false);
+    }
+
     public void login(User user) {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                 new UserAccount(user),
@@ -58,6 +66,14 @@ public class UserServiceImpl implements UserService {
         User loginUser = userRepository.findByPhone(phone)
                 .orElseThrow(() -> new IllegalArgumentException(phone + "은 존재하지 않는 사용자입니다."));
 
+        if (disableUser(loginUser)) {
+            throw new IllegalArgumentException(loginUser.getPhone() + "은 탈퇴한 유저입니다.");
+        }
+
         return new UserAccount(loginUser);
+    }
+
+    private boolean disableUser(User loginUser) {
+        return !loginUser.isEnable();
     }
 }

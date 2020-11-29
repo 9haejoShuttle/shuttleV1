@@ -49,4 +49,8 @@ public class User {
     public void updatePassword(String password) {
         this.password = password;
     }
+
+    public void setEnable(boolean enable) {
+        this.enable = false;
+    }
 }
