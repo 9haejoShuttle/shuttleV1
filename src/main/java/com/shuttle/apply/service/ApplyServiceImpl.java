@@ -8,4 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 public class ApplyServiceImpl {
+    void AppliedList(){
+
+    }
+
 }
