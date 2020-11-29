@@ -138,14 +138,29 @@ class UserControllerTest {
         User beforeUpdateUser = userRepository.findByPhone("010111122222").get();
 
         mockMvc.perform(put("/mypage/password")
-        .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .content(objectMapper.writeValueAsString(passwordUpdateRequestDto)))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(passwordUpdateRequestDto))
+                .with(csrf()))
                 .andExpect(status().isOk());
-
 
         User passwordUpdatedUser = userRepository.findByPhone("010111122222").get();
 
         assertNotEquals(beforeUpdateUser.getPassword(), passwordUpdatedUser.getPassword());
+    }
+
+    @DisplayName("비밀번호 변경 - 비밀번호 불일치")
+    @WithAccount("010111122222")
+    @Test
+    void test_passwordUpdate_failure() throws Exception {
+        PasswordUpdateRequestDto passwordUpdateRequestDto = new PasswordUpdateRequestDto();
+        passwordUpdateRequestDto.setPassword("12341234");
+        passwordUpdateRequestDto.setPasswordConfirm("asdf1234");
+
+        mockMvc.perform(put("/mypage/password")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(passwordUpdateRequestDto))
+                .with(csrf()))
+                .andExpect(status().isInternalServerError());
     }
 
 

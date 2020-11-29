@@ -19,11 +19,18 @@ public class UserController {
 
     private final UserService userService;
     private final SignupValidator signupValidator;
+    private final PasswordUpdateValidator passwordUpdateValidator;
 
     @InitBinder("userSignupRequestDto")
-    public void initBinder(WebDataBinder webDataBinder) {
+    public void signupValidatorBinder(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(signupValidator);
     }
+
+    @InitBinder("passwordUpdateRequestDto")
+    public void passwordUpdateBinder(WebDataBinder webDataBinder) {
+        webDataBinder.addValidators(passwordUpdateValidator);
+    }
+
 
     @GetMapping("/login")
     public String login() {
@@ -68,9 +75,12 @@ public class UserController {
 
     @PutMapping("/mypage/password")
     @ResponseBody
-    public ResponseEntity passwordUpdateSubmit(@CurrentUser User user, @Valid @RequestBody PasswordUpdateRequestDto passwordUpdateRequestForm,
+    public ResponseEntity passwordUpdateSubmit(@CurrentUser User user, @Valid @RequestBody PasswordUpdateRequestDto passwordUpdateRequestDto,
                                                Errors errors, RedirectAttributes redirect) {
-        userService.updatePassword(user, passwordUpdateRequestForm);
+        if (errors.hasErrors()) {
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        userService.updatePassword(user, passwordUpdateRequestDto);
         return new ResponseEntity(HttpStatus.OK);
     }
 }

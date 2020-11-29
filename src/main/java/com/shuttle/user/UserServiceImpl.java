@@ -37,9 +37,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updatePassword(User user, PasswordUpdateRequestDto passwordUpdateRequestForm) {
+    public void updatePassword(User user, PasswordUpdateRequestDto passwordUpdateRequestDto) {
         User targetUser = userRepository.findById(user.getId()).get();
-        targetUser.updatePassword(passwordEncoder.encode(passwordUpdateRequestForm.getPassword()));
+        targetUser.updatePassword(passwordEncoder.encode(passwordUpdateRequestDto.getPassword()));
     }
 
     public void login(User user) {
