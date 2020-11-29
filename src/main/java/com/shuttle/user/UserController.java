@@ -68,7 +68,7 @@ public class UserController {
         *       - 사용자 정보.
         *       - 내 예약 현황(apply) 혹은 이용 중인 노선
         * */
-
+        model.addAttribute("user", user);
         return "mypage/info";
     }
 

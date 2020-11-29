@@ -26,6 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserService userService;
     private final DataSource dataSource;
+    private final CutomOauth2UserService customOauth2UserService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -40,7 +41,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.formLogin()
                 .loginPage("/login")
-                .permitAll();
+                    .permitAll()
+                .and()
+                    .oauth2Login()
+                        .loginPage("/login/oauth")
+                        .userInfoEndpoint()
+                            .userService(customOauth2UserService);
 
 
         http.logout()

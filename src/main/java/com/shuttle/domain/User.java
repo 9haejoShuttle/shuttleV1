@@ -17,7 +17,7 @@ public class User {
     @Column(unique = true)
     private String phone;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String password;
 
     @Column(nullable = false)
@@ -52,5 +52,11 @@ public class User {
 
     public void setEnable(boolean enable) {
         this.enable = false;
+    }
+
+    public User updateName(String name) {
+        this.name = name;
+
+        return this;
     }
 }
