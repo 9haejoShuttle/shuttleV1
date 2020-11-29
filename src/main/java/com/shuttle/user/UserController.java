@@ -1,6 +1,10 @@
 package com.shuttle.user;
 
 import com.shuttle.domain.User;
+import com.shuttle.user.dto.PasswordUpdateRequestDto;
+import com.shuttle.user.dto.UserSignupRequestDto;
+import com.shuttle.user.validator.PasswordUpdateValidator;
+import com.shuttle.user.validator.SignupValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

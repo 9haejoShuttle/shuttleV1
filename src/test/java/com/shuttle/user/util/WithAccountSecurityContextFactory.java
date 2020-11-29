@@ -1,7 +1,7 @@
 package com.shuttle.user.util;
 
 import com.shuttle.user.UserService;
-import com.shuttle.user.UserSignupRequestDto;
+import com.shuttle.user.dto.UserSignupRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

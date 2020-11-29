@@ -1,4 +1,4 @@
-package com.shuttle.user;
+package com.shuttle.user.dto;
 
 import lombok.Getter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

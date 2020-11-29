@@ -1,4 +1,4 @@
-package com.shuttle.user;
+package com.shuttle.user.dto;
 
 import com.shuttle.domain.Role;
 import com.shuttle.domain.User;

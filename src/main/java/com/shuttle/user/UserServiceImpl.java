@@ -1,6 +1,9 @@
 package com.shuttle.user;
 
 import com.shuttle.domain.User;
+import com.shuttle.user.dto.PasswordUpdateRequestDto;
+import com.shuttle.user.dto.UserAccount;
+import com.shuttle.user.dto.UserSignupRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

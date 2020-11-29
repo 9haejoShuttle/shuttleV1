@@ -1,5 +1,6 @@
-package com.shuttle.user;
+package com.shuttle.user.validator;
 
+import com.shuttle.user.dto.PasswordUpdateRequestDto;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
