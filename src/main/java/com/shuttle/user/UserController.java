@@ -1,6 +1,7 @@
 package com.shuttle.user;
 
 import com.shuttle.domain.User;
+import com.shuttle.user.dto.CheckTokenRequestDto;
 import com.shuttle.user.dto.PasswordUpdateRequestDto;
 import com.shuttle.user.dto.UserSignupRequestDto;
 import com.shuttle.user.validator.PasswordUpdateValidator;
@@ -39,6 +40,28 @@ public class UserController {
     @GetMapping("/login")
     public String login() {
         return "login";
+    }
+
+    @GetMapping("/forgotPassword")
+    public void findPasswordForm() {
+
+    }
+
+    @PostMapping("/sendToken")
+    @ResponseBody
+    public ResponseEntity sendToken(@RequestBody String phone) {
+        String token = userService.sendToken(phone);
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PostMapping("/forgotPassword")
+    @ResponseBody
+    public ResponseEntity findPasswordSubmit(@RequestBody CheckTokenRequestDto checkTokenRequestDto) {
+        if (userService.checkToken(checkTokenRequestDto))
+            userService.loadUserByUsername(checkTokenRequestDto.getPhone());
+
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/signup")
@@ -99,4 +122,5 @@ public class UserController {
         userService.disable(user);
         return new ResponseEntity(HttpStatus.OK);
     }
+
 }

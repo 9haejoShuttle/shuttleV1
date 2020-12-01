@@ -29,6 +29,12 @@ public class User {
     @Column(nullable = false)
     private boolean enable;
 
+    @Column(nullable = true)
+    private String forgotPasswordToken;
+
+    @Column(nullable = true)
+    private boolean tokenVerified;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -58,5 +64,13 @@ public class User {
         this.name = name;
 
         return this;
+    }
+
+    public void setForgotPasswordToken(String token) {
+        this.forgotPasswordToken = token;
+    }
+
+    public void setTokenVerified(boolean tokenVerified) {
+        this.tokenVerified = tokenVerified;
     }
 }

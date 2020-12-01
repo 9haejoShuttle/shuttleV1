@@ -2,13 +2,16 @@ package com.shuttle.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shuttle.domain.User;
+import com.shuttle.user.dto.CheckTokenRequestDto;
 import com.shuttle.user.dto.PasswordUpdateRequestDto;
 import com.shuttle.user.util.WithAccount;
+import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -37,6 +40,9 @@ class UserControllerTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -195,6 +201,34 @@ class UserControllerTest {
         assertFalse(user.isEnable());
     }
 
+    @DisplayName("비밀번호 분실 - 인증 토큰 발행 후 확인")
+    @Test
+    void test_forgotPassword() throws Exception {
+        User testUser = userRepository.findByPhone(USER_PHONE).orElseThrow();
 
+        assertNull(testUser.getForgotPasswordToken());
 
+        mockMvc.perform(post("/sendToken")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(USER_PHONE))
+                .andExpect(status().isOk());
+
+        User receivedTokenUser  = userRepository.findByPhone(USER_PHONE).orElseThrow();
+
+        assertNotNull(receivedTokenUser.getForgotPasswordToken());
+
+        CheckTokenRequestDto checkTokenRequestDto = new CheckTokenRequestDto(USER_PHONE, receivedTokenUser.getForgotPasswordToken());
+
+        mockMvc.perform(post("/forgotPassword")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(checkTokenRequestDto)))
+                .andExpect(status().isOk());
+
+        User checkTokenSuccessUser = userRepository.findByPhone(USER_PHONE).orElseThrow();
+
+        assertTrue(checkTokenSuccessUser.isTokenVerified());
+
+    }
 }
