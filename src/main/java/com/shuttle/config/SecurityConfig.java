@@ -41,12 +41,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.formLogin()
                 .loginPage("/login")
-                    .permitAll()
-                .and()
-                    .oauth2Login()
-                        .loginPage("/login/oauth")
-                        .userInfoEndpoint()
-                            .userService(customOauth2UserService);
+                    .permitAll();
+//                .and()
+//                    .oauth2Login()
+//                        .loginPage("/login/oauth")
+//                        .userInfoEndpoint()
+//                            .userService(customOauth2UserService);
 
 
         http.logout()

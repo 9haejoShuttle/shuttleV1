@@ -14,9 +14,6 @@ import javax.servlet.http.HttpSession;
 @RequiredArgsConstructor
 @Controller
 public class IndexController {
-
-    private final HttpSession httpSession;
-
     @GetMapping("/")
     public String index(@CurrentUser User user, Model model){
         if (user != null) {
@@ -25,7 +22,4 @@ public class IndexController {
 
         return "index";
     }
-
-
-
 }

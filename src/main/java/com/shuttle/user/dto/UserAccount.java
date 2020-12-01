@@ -1,6 +1,7 @@
 package com.shuttle.user.dto;
 
 import com.shuttle.domain.Role;
+import com.shuttle.user.UserRepository;
 import lombok.Getter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -24,13 +25,12 @@ import static com.shuttle.domain.Role.USER;
 @Getter
 public class UserAccount extends User implements Serializable {
     private com.shuttle.domain.User user;
-
     /*
     *   스프링 시큐리티가 가진 userdetails.User와
     *   우리가 가진 domain.User를 매칭한다.
     * */
     public UserAccount(com.shuttle.domain.User user) {
-        super(user.getPhone(), "asdf1234", List.of(new SimpleGrantedAuthority(user.getRoleKey())));
+        super(user.getPhone(), user.getPassword(), List.of(new SimpleGrantedAuthority(user.getRoleKey())));
         this.user = user;
     }
 }
