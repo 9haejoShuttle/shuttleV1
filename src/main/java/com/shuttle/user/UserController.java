@@ -49,19 +49,18 @@ public class UserController {
 
     @PostMapping("/sendToken")
     @ResponseBody
-    public ResponseEntity sendToken(@RequestBody String phone) {
-        String token = userService.sendToken(phone);
+    public ResponseEntity sendToken(@RequestBody CheckTokenRequestDto checkTokenRequestDto) {
+        String token = userService.sendToken(checkTokenRequestDto.getPhone());
 
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @PostMapping("/forgotPassword")
+    @PostMapping("/tokenVerified")
     @ResponseBody
     public ResponseEntity findPasswordSubmit(@RequestBody CheckTokenRequestDto checkTokenRequestDto) {
-        if (userService.checkToken(checkTokenRequestDto))
-            userService.loadUserByUsername(checkTokenRequestDto.getPhone());
+        boolean result = userService.checkToken(checkTokenRequestDto);
 
-        return new ResponseEntity(HttpStatus.OK);
+        return result ? new ResponseEntity(HttpStatus.OK) : new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping("/signup")

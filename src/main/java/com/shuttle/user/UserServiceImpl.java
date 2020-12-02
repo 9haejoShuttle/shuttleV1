@@ -70,8 +70,6 @@ public class UserServiceImpl implements UserService {
 
         targetUser.setForgotPasswordToken(token);
 
-        userRepository.save(targetUser);
-
         return token;
     }
 
@@ -80,16 +78,19 @@ public class UserServiceImpl implements UserService {
         User targetUser = userRepository.findByPhone(checkTokenRequestDto.getPhone())
                 .orElseThrow(() -> new IllegalArgumentException(checkTokenRequestDto.getPhone() + " 존재하지 않는 사용자입니다."));
 
-        return userTokenEqualsInputToken(targetUser, checkTokenRequestDto.getToken());
+        return userTokenEqualsInputToken(targetUser, checkTokenRequestDto.getToken().trim());
     }
 
     private boolean userTokenEqualsInputToken(User targetUser, String token) {
-        String userToken = targetUser.getForgotPasswordToken();
+        String userToken = targetUser.getForgotPasswordToken().trim();
         boolean equalsToken = Objects.isNull(userToken) ?  false : token.equals(userToken);
+
         if (equalsToken) {
             targetUser.setTokenVerified(true);
-            userRepository.save(targetUser);
+            login(targetUser);
         }
+
+
         return equalsToken;
     }
 

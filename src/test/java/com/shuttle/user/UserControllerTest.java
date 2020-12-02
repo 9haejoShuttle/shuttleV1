@@ -208,19 +208,22 @@ class UserControllerTest {
 
         assertNull(testUser.getForgotPasswordToken());
 
+        CheckTokenRequestDto checkTokenRequestDto = new CheckTokenRequestDto();
+        checkTokenRequestDto.setPhone(USER_PHONE);
+
         mockMvc.perform(post("/sendToken")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(USER_PHONE))
+                .content(objectMapper.writeValueAsString(checkTokenRequestDto)))
                 .andExpect(status().isOk());
 
         User receivedTokenUser  = userRepository.findByPhone(USER_PHONE).orElseThrow();
 
         assertNotNull(receivedTokenUser.getForgotPasswordToken());
 
-        CheckTokenRequestDto checkTokenRequestDto = new CheckTokenRequestDto(USER_PHONE, receivedTokenUser.getForgotPasswordToken());
+        checkTokenRequestDto.setToken(receivedTokenUser.getForgotPasswordToken());
 
-        mockMvc.perform(post("/forgotPassword")
+        mockMvc.perform(post("/tokenVerified")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(checkTokenRequestDto)))
