@@ -33,15 +33,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
 
         http.authorizeRequests()
-                .mvcMatchers("/admin/login", "/admin/signup",
-                        "/", "/index", "/signup", "/sendToken", "/forgotPassword").permitAll() //모두 접근 가능
+                .mvcMatchers("/admin/login", "/admin/signup", "/", "/index").permitAll()
+                .mvcMatchers("/sendToken", "/signup", "/forgotPassword", "/tokenVerified", "/login").anonymous()//모두 접근 가능
                 .mvcMatchers(HttpMethod.GET, "/api/post/**").permitAll() //게시물 조회는 누구나 접근 가능
                 .mvcMatchers("/admin/**", "/api/category/**").hasRole(Role.ADMIN.name()) //ADMIN 이하 접근 제한
                 .anyRequest().authenticated();
 
         http.formLogin()
                 .loginPage("/login")
-                    .permitAll();
+                    .permitAll(false);
 //                .and()
 //                    .oauth2Login()
 //                        .loginPage("/login/oauth")
