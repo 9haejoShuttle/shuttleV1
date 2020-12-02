@@ -90,7 +90,6 @@ public class UserServiceImpl implements UserService {
             login(targetUser);
         }
 
-
         return equalsToken;
     }
 

@@ -36,7 +36,6 @@ public class UserController {
         webDataBinder.addValidators(passwordUpdateValidator);
     }
 
-
     @GetMapping("/login")
     public String login() {
         return "login";
@@ -57,7 +56,7 @@ public class UserController {
 
     @PostMapping("/tokenVerified")
     @ResponseBody
-    public ResponseEntity findPasswordSubmit(@RequestBody CheckTokenRequestDto checkTokenRequestDto) {
+    public ResponseEntity tokenVerified(@RequestBody CheckTokenRequestDto checkTokenRequestDto) {
         boolean result = userService.checkToken(checkTokenRequestDto);
 
         return result ? new ResponseEntity(HttpStatus.OK) : new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
