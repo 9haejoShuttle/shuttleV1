@@ -110,8 +110,7 @@ public class UserController {
     }
 
     @GetMapping("/mypage/account")
-    public String disableUserForm(@CurrentUser User user) {
-        return "mypage/delete";
+    public void disableUserForm(@CurrentUser User user) {
     }
 
     @PutMapping("/mypage/account")

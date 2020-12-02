@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>계정 비활성화</title>
+</head>
+<body>
+    <h1>회원 탈퇴</h1>
+    정말로 탈퇴하겠습니까?
+    <button class="btn btn-danger" id="btn-disable">탈퇴</button>
+
+    <script
+            src="https://code.jquery.com/jquery-3.5.1.min.js"
+            integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+    <script>
+        let index = {
+            init : function () {
+                $('#btn-disable').on('click', ()=>{
+                    if (confirm("정말 탈퇴하시겠습니까?"))
+                        this.disable();
+                })
+            },
+
+            disable: function () {
+                $.ajax({
+                    type : 'PUT',
+                    url : '/mypage/account',
+                    dataType : 'text',  //response를 어떤 타입으로 받을 것인지 선택
+                    contentType : 'application/json; charset=UTF-8',
+                }).done(function (response) {
+                    alert("안녕히가세요");
+                    window.location.href="/logout";
+                }).fail(function (error){
+                    alert(JSON.stringify(error))
+                })
+            }
+        } //index
+
+        index.init();
+    </script>
+</body>
+</html>
