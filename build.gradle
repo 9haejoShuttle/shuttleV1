@@ -24,6 +24,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.h2database:h2'
@@ -34,7 +35,10 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.3.5.RELEASE'
-    
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.12' // 테스트 의존성 추가
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12' // 테스트 의존성 추가
+    compile group: 'org.springframework.security', name: 'spring-security-oauth2-client', version: '5.4.1'
 }
 
 test {

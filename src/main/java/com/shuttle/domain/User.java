@@ -17,7 +17,7 @@ public class User {
     @Column(unique = true)
     private String phone;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String password;
 
     @Column(nullable = false)
@@ -28,6 +28,12 @@ public class User {
 
     @Column(nullable = false)
     private boolean enable;
+
+    @Column(nullable = true)
+    private String forgotPasswordToken;
+
+    @Column(nullable = true)
+    private boolean tokenVerified;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -44,5 +50,27 @@ public class User {
 
     public String getRoleKey() {
         return this.role.getKey();
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = false;
+    }
+
+    public User updateName(String name) {
+        this.name = name;
+
+        return this;
+    }
+
+    public void setForgotPasswordToken(String token) {
+        this.forgotPasswordToken = token;
+    }
+
+    public void setTokenVerified(boolean tokenVerified) {
+        this.tokenVerified = tokenVerified;
     }
 }

@@ -1,6 +1,11 @@
 package com.shuttle.user;
 
 import com.shuttle.domain.User;
+import com.shuttle.user.dto.CheckTokenRequestDto;
+import com.shuttle.user.dto.PasswordUpdateRequestDto;
+import com.shuttle.user.dto.UserSignupRequestDto;
+import com.shuttle.user.validator.PasswordUpdateValidator;
+import com.shuttle.user.validator.SignupValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,15 +24,42 @@ public class UserController {
 
     private final UserService userService;
     private final SignupValidator signupValidator;
+    private final PasswordUpdateValidator passwordUpdateValidator;
 
     @InitBinder("userSignupRequestDto")
-    public void initBinder(WebDataBinder webDataBinder) {
+    public void signupValidatorBinder(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(signupValidator);
+    }
+
+    @InitBinder("passwordUpdateRequestDto")
+    public void passwordUpdateBinder(WebDataBinder webDataBinder) {
+        webDataBinder.addValidators(passwordUpdateValidator);
     }
 
     @GetMapping("/login")
     public String login() {
         return "login";
+    }
+
+    @GetMapping("/forgotPassword")
+    public void findPasswordForm() {
+
+    }
+
+    @PostMapping("/sendToken")
+    @ResponseBody
+    public ResponseEntity sendToken(@RequestBody CheckTokenRequestDto checkTokenRequestDto) {
+        String token = userService.sendToken(checkTokenRequestDto.getPhone());
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PostMapping("/tokenVerified")
+    @ResponseBody
+    public ResponseEntity tokenVerified(@RequestBody CheckTokenRequestDto checkTokenRequestDto) {
+        boolean result = userService.checkToken(checkTokenRequestDto);
+
+        return result ? new ResponseEntity(HttpStatus.OK) : new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping("/signup")
@@ -51,34 +83,41 @@ public class UserController {
 
     @GetMapping("/mypage")
     public String mypageIndex(@CurrentUser User user, Model model) {
-        if (user != null) {
-            model.addAttribute("user", user);
-        }
+        /*
+        *   TODO
+        *    마이페이지에서 첫 번째로 띄워야 할 정보
+        *       - 사용자 정보.
+        *       - 내 예약 현황(apply) 혹은 이용 중인 노선
+        * */
+        model.addAttribute("user", user);
         return "mypage/info";
     }
 
-
-    @PostMapping("/password")
-    public void passwordUpdateSubmit(@CurrentUser User user) {
-        /* TODO
-         *   1. 어떤 계정으로 로그인되어 있는지 확인
-         *   2. 비밀번호 변경 요청 폼을 받아서 Validator로 검사
-         *   3. 통과하지 못하면 다시 변경 폼으로 리턴
-         *   4. 통과한다면 비밀번호 변경작업
-         * */
-        System.out.println(user);
-        System.out.println(user.getPhone());
-        System.out.println(user.getName());
-    }
-
     @GetMapping("/mypage/password")
-    @ResponseBody
-    public ResponseEntity<String> passwordUpdateForm() {
-        /* TODO
-         *   1. 현재 로그인 중인지 체크
-         *   2. 로그인되어 있는 정보를 화면으로 보낸다.
-         *   3. 비밀번호 변경 폼을 화면으로 보낸다.
-         * */
-        return new ResponseEntity<String>("aasdf", HttpStatus.OK);
+    public String passwordUpdateForm(@CurrentUser User user) {
+        return "mypage/password";
     }
+
+    @PutMapping("/mypage/password")
+    @ResponseBody
+    public ResponseEntity passwordUpdateSubmit(@CurrentUser User user, @Valid @RequestBody PasswordUpdateRequestDto passwordUpdateRequestDto,
+                                               Errors errors, RedirectAttributes redirect) {
+        if (errors.hasErrors()) {
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        userService.updatePassword(user, passwordUpdateRequestDto);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @GetMapping("/mypage/account")
+    public void disableUserForm(@CurrentUser User user) {
+    }
+
+    @PutMapping("/mypage/account")
+    @ResponseBody
+    public ResponseEntity disableUserSubmit(@CurrentUser User user) {
+        userService.disable(user);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
 }

@@ -26,21 +26,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserService userService;
     private final DataSource dataSource;
+    private final CutomOauth2UserService customOauth2UserService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
 
         http.authorizeRequests()
-                .mvcMatchers("/admin/login", "/admin/signup",
-                        "/", "/index", "/signup").permitAll() //모두 접근 가능
+                .mvcMatchers("/admin/login", "/admin/signup", "/", "/index").permitAll()
+                .mvcMatchers("/sendToken", "/signup", "/forgotPassword", "/tokenVerified", "/login").anonymous()//모두 접근 가능
                 .mvcMatchers(HttpMethod.GET, "/api/post/**").permitAll() //게시물 조회는 누구나 접근 가능
                 .mvcMatchers("/admin/**", "/api/category/**").hasRole(Role.ADMIN.name()) //ADMIN 이하 접근 제한
                 .anyRequest().authenticated();
 
         http.formLogin()
                 .loginPage("/login")
-                .permitAll();
+                    .permitAll(false);
+//                .and()
+//                    .oauth2Login()
+//                        .loginPage("/login/oauth")
+//                        .userInfoEndpoint()
+//                            .userService(customOauth2UserService);
 
 
         http.logout()
