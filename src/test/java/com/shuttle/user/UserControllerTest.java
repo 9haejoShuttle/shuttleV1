@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shuttle.domain.User;
 import com.shuttle.user.dto.CheckTokenRequestDto;
 import com.shuttle.user.dto.PasswordUpdateRequestDto;
+import com.shuttle.user.dto.UserSignupRequestDto;
 import com.shuttle.user.util.WithAccount;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
@@ -70,39 +71,33 @@ class UserControllerTest {
     @DisplayName("회원가입 테스트")
     @Test
     void test_signupSubmit() throws Exception {
-        String phone = "01000000000";
-        String name = "bobo";
+        UserSignupRequestDto userSignupRequestDto
+                = new UserSignupRequestDto("01000000000", PLAIN_TEXT_PASSWORD, PLAIN_TEXT_PASSWORD, "bobo");
+
         mockMvc.perform(post("/signup")
-        .param("phone", phone)
-        .param("password", PLAIN_TEXT_PASSWORD)
-        .param("passwordConfirm", PLAIN_TEXT_PASSWORD)
-        .param("name", name)
-        .with(csrf()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/"))
-                .andExpect(flash().attributeExists("message"));
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(userSignupRequestDto))
+                .with(csrf()))
+                .andExpect(status().isOk());
 
         User newUser = userRepository.findByPhone("01000000000").get();
 
-        assertEquals(newUser.getPhone(), phone);
-        assertNotEquals(newUser.getPassword(), PLAIN_TEXT_PASSWORD);
-        assertEquals(newUser.getName(), name);
+        assertEquals(newUser.getPhone(), userSignupRequestDto.getPhone());
+        assertNotEquals(newUser.getPassword(), userSignupRequestDto.getPassword());
+        assertEquals(newUser.getName(), userSignupRequestDto.getName());
     }
 
     @DisplayName("회원가입 테스트 - 잘못된 값 요청 시 Validator")
     @Test
     void test_signup_failure() throws Exception {
-        String phone = "01000000000";
-        String name = "bobo";
+        UserSignupRequestDto userSignupRequestDto
+                = new UserSignupRequestDto("01000000000", PLAIN_TEXT_PASSWORD, "12345611", "bobo");
+
         mockMvc.perform(post("/signup")
-                .param("phone", phone)
-                .param("password", PLAIN_TEXT_PASSWORD)
-                .param("passwordConfirm", "12333333")
-                .param("name", name)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(userSignupRequestDto))
                 .with(csrf()))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists("errors"))
-                .andExpect(view().name("signup"));
+                .andExpect(status().isInternalServerError());
     }
 
     @DisplayName("로그인 테스트 - 성공")

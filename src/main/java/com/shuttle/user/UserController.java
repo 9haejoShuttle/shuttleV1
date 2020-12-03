@@ -26,6 +26,14 @@ public class UserController {
     private final SignupValidator signupValidator;
     private final PasswordUpdateValidator passwordUpdateValidator;
 
+    final static String URL_MYPAGE = "/mypage";
+    final static String URL_PASSWORD = "/password";
+    final static String URL_ACCOUNT = "/account";
+    final static String URL_SIGNUP = "/signup";
+
+    final static ResponseEntity<HttpStatus> SUCCESS = ResponseEntity.ok().build();
+    final static ResponseEntity<HttpStatus> FAIL = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
     @InitBinder("userSignupRequestDto")
     public void signupValidatorBinder(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(signupValidator);
@@ -37,8 +45,7 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String login() {
-        return "login";
+    public void login() {
     }
 
     @GetMapping("/forgotPassword")
@@ -51,7 +58,7 @@ public class UserController {
     public ResponseEntity sendToken(@RequestBody CheckTokenRequestDto checkTokenRequestDto) {
         String token = userService.sendToken(checkTokenRequestDto.getPhone());
 
-        return new ResponseEntity(HttpStatus.OK);
+        return SUCCESS;
     }
 
     @PostMapping("/tokenVerified")
@@ -59,46 +66,43 @@ public class UserController {
     public ResponseEntity tokenVerified(@RequestBody CheckTokenRequestDto checkTokenRequestDto) {
         boolean result = userService.checkToken(checkTokenRequestDto);
 
-        return result ? new ResponseEntity(HttpStatus.OK) : new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        return result ? SUCCESS : FAIL;
     }
 
-    @GetMapping("/signup")
-    public String signupForm(Model model) {
-        model.addAttribute("userSignupRequestDto", new UserSignupRequestDto());
-        return "signup";
+    @GetMapping(URL_SIGNUP)
+    public void signupForm() {
     }
 
-    @PostMapping("/signup")
-    public String signupSubmit(@Valid UserSignupRequestDto userSignupRequestDto, Errors errors,
-                               Model model, RedirectAttributes redirect) {
+    @PostMapping(URL_SIGNUP)
+    @ResponseBody
+    public ResponseEntity signupSubmit(@RequestBody @Valid UserSignupRequestDto userSignupRequestDto, Errors errors) {
         if (errors.hasErrors()) {
-            model.addAttribute("errors", errors);
-            return "signup";
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(errors.getFieldError());
         }
 
         String newUserName = userService.signup(userSignupRequestDto);
-        redirect.addFlashAttribute("message", newUserName+"님 가입을 축하합니다.");
-        return "redirect:/";
+
+        return ResponseEntity.ok(newUserName);
     }
 
-    @GetMapping("/mypage")
-    public String mypageIndex(@CurrentUser User user, Model model) {
+    @GetMapping(URL_MYPAGE)
+    public ResponseEntity mypageIndex(@CurrentUser User user, Model model) {
         /*
         *   TODO
         *    마이페이지에서 첫 번째로 띄워야 할 정보
         *       - 사용자 정보.
         *       - 내 예약 현황(apply) 혹은 이용 중인 노선
         * */
-        model.addAttribute("user", user);
-        return "mypage/info";
+        return ResponseEntity.ok(user);
     }
 
-    @GetMapping("/mypage/password")
-    public String passwordUpdateForm(@CurrentUser User user) {
-        return "mypage/password";
+    @GetMapping(URL_MYPAGE+URL_PASSWORD)
+    public void passwordUpdateForm(@CurrentUser User user) {
     }
 
-    @PutMapping("/mypage/password")
+    @PutMapping(URL_MYPAGE + URL_PASSWORD)
     @ResponseBody
     public ResponseEntity passwordUpdateSubmit(@CurrentUser User user, @Valid @RequestBody PasswordUpdateRequestDto passwordUpdateRequestDto,
                                                Errors errors, RedirectAttributes redirect) {
@@ -109,15 +113,15 @@ public class UserController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping("/mypage/account")
+    @GetMapping(URL_MYPAGE + URL_ACCOUNT)
     public void disableUserForm(@CurrentUser User user) {
     }
 
-    @PutMapping("/mypage/account")
+    @PutMapping(URL_MYPAGE + URL_ACCOUNT)
     @ResponseBody
     public ResponseEntity disableUserSubmit(@CurrentUser User user) {
         userService.disable(user);
-        return new ResponseEntity(HttpStatus.OK);
+        return SUCCESS;
     }
 
 }
