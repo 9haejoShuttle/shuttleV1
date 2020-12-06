@@ -188,7 +188,8 @@ class UserControllerTest {
 
         assertTrue(targetUser.isEnable());
 
-        mockMvc.perform(put("/mypage/account"))
+        mockMvc.perform(put("/mypage/account")
+                .with(csrf()))
                 .andExpect(status().isOk());
 
         User user = userRepository.findByPhone("010111122222").orElseThrow();

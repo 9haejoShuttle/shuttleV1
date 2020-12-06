@@ -22,4 +22,9 @@ public class IndexController {
 
         return "index";
     }
+
+    @GetMapping("/test")
+    public String loginPage() {
+        return "test";
+    }
 }

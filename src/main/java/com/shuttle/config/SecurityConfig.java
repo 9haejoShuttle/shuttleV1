@@ -30,10 +30,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
+        // http.csrf().disable();
 
         http.authorizeRequests()
-                .mvcMatchers("/admin/login", "/admin/signup", "/", "/index", "/signup").permitAll()
+                .mvcMatchers("/admin/login", "/admin/signup", "/", "/index", "/signup","/test").permitAll()
                 .mvcMatchers("/sendToken", "/forgotPassword", "/tokenVerified", "/login").anonymous()//모두 접근 가능
                 .mvcMatchers(HttpMethod.GET, "/api/post/**").permitAll() //게시물 조회는 누구나 접근 가능
                 .mvcMatchers("/admin/**", "/api/category/**").hasRole(Role.ADMIN.name()) //ADMIN 이하 접근 제한
