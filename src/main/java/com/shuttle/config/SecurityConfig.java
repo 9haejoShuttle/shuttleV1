@@ -32,6 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         // http.csrf().disable();
 
+
         http.authorizeRequests()
                 .mvcMatchers("/admin/login", "/admin/signup", "/", "/index", "/signup","/test").permitAll()
                 .mvcMatchers("/sendToken", "/forgotPassword", "/tokenVerified", "/login").anonymous()//모두 접근 가능
@@ -55,6 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.rememberMe()
                 .userDetailsService(userService)
                 .tokenRepository(tokenRepository());
+
     }
 
     @Bean
@@ -71,6 +73,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
-                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+                .antMatchers("/error"); // reference : https://www.javaer101.com/article/584628.html
     }
 }

@@ -105,7 +105,7 @@ public class UserController {
     @PutMapping(URL_MYPAGE + URL_PASSWORD)
     @ResponseBody
     public ResponseEntity passwordUpdateSubmit(@CurrentUser User user, @Valid @RequestBody PasswordUpdateRequestDto passwordUpdateRequestDto,
-                                               Errors errors, RedirectAttributes redirect) {
+                                               Errors errors) {
         if (errors.hasErrors()) {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
