@@ -58,7 +58,7 @@ public class UserController {
     public ResponseEntity sendToken(@RequestBody CheckTokenRequestDto checkTokenRequestDto) {
         String token = userService.sendToken(checkTokenRequestDto.getPhone());
 
-        return SUCCESS;
+        return ResponseEntity.ok(token);
     }
 
     @PostMapping("/tokenVerified")
