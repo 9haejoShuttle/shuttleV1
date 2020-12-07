@@ -1,6 +1,8 @@
-package com.shuttle.user;
+package com.shuttle.user.validator;
 
 
+import com.shuttle.user.UserRepository;
+import com.shuttle.user.dto.UserSignupRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
