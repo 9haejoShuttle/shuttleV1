@@ -14,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 
@@ -42,6 +41,11 @@ public class UserController {
     @InitBinder("passwordUpdateRequestDto")
     public void passwordUpdateBinder(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(passwordUpdateValidator);
+    }
+
+    @GetMapping("/mypage/payment")
+    public void paymentForm(@CurrentUser User user, Model model) {
+        model.addAttribute("user", user);
     }
 
     @GetMapping("/login")
@@ -88,14 +92,17 @@ public class UserController {
     }
 
     @GetMapping(URL_MYPAGE)
-    public ResponseEntity mypageIndex(@CurrentUser User user, Model model) {
+    public String mypageIndex(@CurrentUser User user, Model model) {
         /*
         *   TODO
         *    마이페이지에서 첫 번째로 띄워야 할 정보
         *       - 사용자 정보.
         *       - 내 예약 현황(apply) 혹은 이용 중인 노선
         * */
-        return ResponseEntity.ok(user);
+
+        model.addAttribute("user", user);
+
+        return "/mypage/info";
     }
 
     @GetMapping(URL_MYPAGE+URL_PASSWORD)
