@@ -15,7 +15,7 @@ public class ApplyControllerTests {
     private MockMvc mockMvc;
 
     @Autowired
-    private ApplyService applyService;
+    private ApplyService  applyService;
 
     @Test
     void addApply(){
