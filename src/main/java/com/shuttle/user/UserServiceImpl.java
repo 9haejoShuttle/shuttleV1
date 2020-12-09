@@ -1,7 +1,6 @@
 package com.shuttle.user;
 
 import com.shuttle.domain.User;
-import com.shuttle.domain.UserDetail;
 import com.shuttle.user.dto.CheckTokenRequestDto;
 import com.shuttle.user.dto.PasswordUpdateRequestDto;
 import com.shuttle.user.dto.UserAccount;
@@ -115,10 +114,8 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException(loginUser.getPhone() + "은 탈퇴한 유저입니다.");
         }
 
-        //로그인 이력
-        //userDetailRepository.save(new UserDetail(loginUser));
-
-        loginUser.addUserDetail(new UserDetail());
+        //최근 로그인 시간 갱신
+        loginUser.updateLastLoginTimeInUserDetail();
 
         return new UserAccount(loginUser);
     }

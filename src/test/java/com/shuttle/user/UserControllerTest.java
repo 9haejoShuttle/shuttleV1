@@ -19,7 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -150,19 +151,21 @@ class UserControllerTest {
     @DisplayName("로그인 이력 남기기")
     @Test
     void test_loginHistory() throws Exception {
-        for (int i = 0; i<10; i++) {
-            mockMvc.perform(post("/login")
-                    .with(csrf())
-                    .param("username", USER_PHONE)
-                    .param("password", PLAIN_TEXT_PASSWORD))
-                    .andExpect(status().is3xxRedirection())
-                    .andExpect(redirectedUrl("/"))
-                    .andExpect(authenticated().withUsername(USER_PHONE));
-        }
+        mockMvc.perform(post("/login")
+                .with(csrf())
+                .param("username", USER_PHONE)
+                .param("password", PLAIN_TEXT_PASSWORD))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"))
+                .andExpect(authenticated().withUsername(USER_PHONE));
 
-        List<UserDetail> userDetail = userDetailRepository.findAll();
+        User user = userRepository.findByPhone(USER_PHONE).get();
+        Optional<UserDetail> userDetail = userDetailRepository.findById(user.getId());
 
-        assertTrue(userDetail.size() >= 10);
+        //userid로 불러온 userDetail이 empty가 아니어야 한다.
+        assertFalse(userDetail.isEmpty());
+        //userDetail에 있는 로그인 시간이 현재 시간 이전이어야 한다.
+        assertTrue(userDetail.get().getLoginDate().isBefore(LocalDateTime.now()));
     }
     
     @DisplayName("비밀번호 변경 - 성공")

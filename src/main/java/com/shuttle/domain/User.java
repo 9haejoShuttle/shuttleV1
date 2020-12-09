@@ -6,8 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Getter @AllArgsConstructor @NoArgsConstructor
 @Entity
@@ -37,8 +37,8 @@ public class User {
     @Column(nullable = true)
     private boolean tokenVerified;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<UserDetail> userDetail = new HashSet<>();
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private UserDetail userDetail;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -53,9 +53,12 @@ public class User {
         this.role = Role.USER;
     }
 
-    public void addUserDetail(UserDetail userDetail) {  //로그인 시 UserDetail 자동 추가
-        this.getUserDetail().add(userDetail);
-        userDetail.setUser(this);
+    public void updateLastLoginTimeInUserDetail() {  //로그인 시 UserDetail 자동 추가
+        if (Objects.isNull(this.getUserDetail())) {
+            this.userDetail = new UserDetail(this);
+        }
+
+        this.getUserDetail().setLoginDate(LocalDateTime.now());
     }
 
     public String getRoleKey() {
