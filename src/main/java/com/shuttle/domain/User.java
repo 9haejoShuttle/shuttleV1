@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter @AllArgsConstructor @NoArgsConstructor
 @Entity
@@ -35,6 +37,9 @@ public class User {
     @Column(nullable = true)
     private boolean tokenVerified;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<UserDetail> userDetail = new HashSet<>();
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -46,6 +51,11 @@ public class User {
         this.name =name;
         this.enable = true;
         this.role = Role.USER;
+    }
+
+    public void addUserDetail(UserDetail userDetail) {  //로그인 시 UserDetail 자동 추가
+        this.getUserDetail().add(userDetail);
+        userDetail.setUser(this);
     }
 
     public String getRoleKey() {

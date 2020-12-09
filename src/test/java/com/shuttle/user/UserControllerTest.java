@@ -2,23 +2,24 @@ package com.shuttle.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shuttle.domain.User;
+import com.shuttle.domain.UserDetail;
 import com.shuttle.user.dto.CheckTokenRequestDto;
 import com.shuttle.user.dto.PasswordUpdateRequestDto;
 import com.shuttle.user.dto.UserSignupRequestDto;
 import com.shuttle.user.util.WithAccount;
-import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -41,6 +42,9 @@ class UserControllerTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserDetailRepository userDetailRepository;
 
     @Autowired
     private UserService userService;
@@ -140,6 +144,25 @@ class UserControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login?error"))
                 .andExpect(unauthenticated());
+    }
+
+    //TODO 로그인 테스트와 코드가 중복되는 코드 따로 빼기
+    @DisplayName("로그인 이력 남기기")
+    @Test
+    void test_loginHistory() throws Exception {
+        for (int i = 0; i<10; i++) {
+            mockMvc.perform(post("/login")
+                    .with(csrf())
+                    .param("username", USER_PHONE)
+                    .param("password", PLAIN_TEXT_PASSWORD))
+                    .andExpect(status().is3xxRedirection())
+                    .andExpect(redirectedUrl("/"))
+                    .andExpect(authenticated().withUsername(USER_PHONE));
+        }
+
+        List<UserDetail> userDetail = userDetailRepository.findAll();
+
+        assertTrue(userDetail.size() >= 10);
     }
     
     @DisplayName("비밀번호 변경 - 성공")

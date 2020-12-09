@@ -1,6 +1,7 @@
 package com.shuttle.user;
 
 import com.shuttle.domain.User;
+import com.shuttle.domain.UserDetail;
 import com.shuttle.user.dto.CheckTokenRequestDto;
 import com.shuttle.user.dto.PasswordUpdateRequestDto;
 import com.shuttle.user.dto.UserAccount;
@@ -28,6 +29,7 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserDetailRepository userDetailRepository;
 
     @Override
     public String signup(UserSignupRequestDto userSignupRequestDto) {
@@ -103,7 +105,7 @@ public class UserServiceImpl implements UserService {
         context.setAuthentication(token);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Override
     public UserDetails loadUserByUsername(String phone) throws UsernameNotFoundException {
         User loginUser = userRepository.findByPhone(phone)
@@ -112,6 +114,11 @@ public class UserServiceImpl implements UserService {
         if (disableUser(loginUser)) {
             throw new IllegalArgumentException(loginUser.getPhone() + "은 탈퇴한 유저입니다.");
         }
+
+        //로그인 이력
+        //userDetailRepository.save(new UserDetail(loginUser));
+
+        loginUser.addUserDetail(new UserDetail());
 
         return new UserAccount(loginUser);
     }
