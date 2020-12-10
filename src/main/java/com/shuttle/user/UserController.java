@@ -83,7 +83,7 @@ public class UserController {
         if (errors.hasErrors()) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(errors.getFieldError());
+                    .body(errors.getFieldError().getDefaultMessage());
         }
 
         String newUserName = userService.signup(userSignupRequestDto);
