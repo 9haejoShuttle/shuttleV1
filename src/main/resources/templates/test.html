@@ -156,17 +156,6 @@
                     var resultData = response.properties;
                     var resultFeatures = response.features;
 
-                    console.log('-----------------------------------');
-                    console.log(resultFeatures);
-                    console.log('-----------------------------------');
-                    console.log(resultFeatures[0].properties.completeTime);
-                    console.log(resultFeatures[resultFeatures.length - 1].properties.completeTime);
-
-                    var test = resultFeatures[resultFeatures.length - 1].properties.completeTime - resultFeatures[0].properties.completeTime;
-
-                    console.log(test);
-
-
                     // 결과 출력
                     var tDistance = "총 거리 : " + resultData.totalDistance / 1000 + "km,  ";
                     var tTime = "총 시간 : " + Math.ceil((resultData.totalTime / 60 + (viaTime*6) / 60 )) + "분";
@@ -193,7 +182,7 @@
 
                             polyline_ = new Tmapv2.Polyline({
                                 path : drawInfoArr,
-                                strokeColor : "#FF0000",
+                                strokeColor : "#ff0000",
                                 strokeWeight: 6,
                                 map : map
                             });
@@ -205,8 +194,6 @@
                 }
             });
         }
-
-
     </script>
 <body onload="initTmap()"><!-- 맵 생성 실행 -->
 <p id="result"></p>

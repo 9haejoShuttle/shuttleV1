@@ -8,9 +8,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-/*
-*   사용자의 로그인 이력을 관리하는 테이블
-* */
 @NoArgsConstructor
 @Getter @Setter
 @Entity
