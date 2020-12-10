@@ -21,19 +21,13 @@ package com.shuttle.apply.controller;
 
 import com.shuttle.apply.dto.ApplyDTO;
 import com.shuttle.apply.service.ApplyService;
-import com.shuttle.domain.Apply;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-//로그인 예외 설정 어노테이션이라서 추가했는데 작동 X
-//@EnableAutoConfiguration(exclude = {SecurityAutoConfiguration.class})
 @RequiredArgsConstructor
-@RestController
+@Controller
 @RequestMapping("/apply")
 public class ApplyController {
     ApplyService applyService;
@@ -42,7 +36,7 @@ public class ApplyController {
     @GetMapping("/list")
     public void list(Model model) {
 //        if(applyService.getAppliedList()!=null)
-  //          model.addAttribute("Applies", applyService.getAppliedList());
+        //          model.addAttribute("Applies", applyService.getAppliedList());
     }
 
     //신청
