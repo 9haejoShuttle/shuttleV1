@@ -10,11 +10,11 @@ import java.util.List;
 
 public interface ApplyRepository extends JpaRepository<Apply, String> {
 
-    @Transactional
-    @Query("select ap.applyId from Apply ap")
-    List<Apply> findAll();
-
-    @Transactional
-    @Query("select ap.applyId from Apply ap where ap.applyId = :applyId")
-    Apply findAppliesByApplyId(@Param("applyId") String applyId);
+//    @Transactional
+//    @Query("select ap.applyId from Apply ap")
+//    List<Apply> findAll();
+//
+//    @Transactional
+//    @Query("select ap.applyId from Apply ap where ap.applyId = :applyId")
+//    Apply findAppliesByApplyId(@Param("applyId") String applyId);
 }

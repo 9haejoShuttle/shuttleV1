@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>구해줘 셔틀</title>
+    <!--css링크 href="../css/apply.css" 로 추후 수정예정. 현재 html에서 바로 적용해서 보기 위해 임시로 걸어둔 링크 -->
+    <link rel="stylesheet" type="text/css" href="../css/apply.css">
+    <!--    <link rel="stylesheet" type="text/css" href="../../static/css/apply.css">-->
+</head>
+<body>
+<div class="registerRoute">
+    <!--// 검색 페이지 -->
+    <div id="search_road_area" class="search_road_area">
+        <div class="form_wrap" style="padding-bottom:10px;">
+            <!-- 출발 정거장 찾기 -->
+            <input type="text" name="start" class="start autocomplete-input" id="start" value=""
+                   placeholder="출발지를 검색합니다." autocomplete="off"/>
+            <input type="hidden" name="startLat" class="startLat" id="startLat" value="0">
+            <input type="hidden" name="startLng" class="startLng" id="startLng" value="0">
+            <input type="hidden" name="startAddr" id="startAddr" value="">
+
+            <!-- 도착 정거장 찾기 -->
+            <input type="text" name="arrival" class="arrival autocomplete-input" id="arrival" value=""
+                   placeholder="도착지를 검색합니다." autocomplete="off"/>
+            <input type="hidden" name="arrivalLat" class="arrivalLat" id="arrivalLat" value="0">
+            <input type="hidden" name="arrivalLng" class="arrivalLng" id="arrivalLng" value="0">
+            <input type="hidden" name="arrivalAddr" id="arrivalAddr" value="">
+            <!--  도착시간 정하기  -->
+            <div>
+                <select id="rideTimeSelect" class="sel sel_time">
+                    <option value="0">도착시간 선택</option>
+                    <option value="710">7:10</option>
+                    <option value="740">7:40</option>
+                    <option value="810">8:10</option>
+                    <option value="840">8:40</option>
+                    <option value="910">9:10</option>
+                    <option value="940">9:40</option>
+                    <option value="1010">10:10</option>
+                    <option value="1040">10:40</option>
+                    <option value="">---퇴근---</option>
+                    <option value="1720">17:20</option>
+                    <option value="1820">18:20</option>
+                    <option value="1920">19:20</option>
+                    <option value="2020">20:20</option>
+                    <option value="2120">21:20</option>
+                </select>
+
+                <!--  제출버튼  to register post method -->
+                <input type="button" name="btnRegisterRoute" class="btnRegisterRoute" id="btnRegisterRoute" value="노선신청"
+                       style="cursor: pointer;height:40px;">
+            </div>
+        </div>
+    </div>
+</div>
+<!--    MODAL  -->
+<div id="modal" class="mapModal">
+    <div class="mapModalContent">
+        <div class="page-header">
+            <h1 class="mapModalTitle">...</h1>
+        </div>
+        <div id="mapArea">
+            <hr>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="search">
+                        <label>
+                            <input class="searchInput" type="text">
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="map" style="width:100%;height:350px;position:relative;overflow:hidden;"></div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="closeMapModal modalCloseBtn" onClick="closeModal();">
+            <input type="button" value="확인">
+        </div>
+    </div>
+</div>
+<form id="hiddenForm">
+</form>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(listener => {
+        const start = document.getElementById("start");
+        const startLat = document.getElementById("startLat");
+        const startLng = document.getElementById("startLng");
+        const startAddr = document.getElementById("startAddr");
+        const arrival = document.getElementById("arrival");
+        const arrivalLat = document.getElementById("arrivalLat");
+        const arrivalLng = document.getElementById("arrivalLng");
+        const arrivalAddr = document.getElementById("arrivalAddr");
+
+        //출발지와 도착지를 위한 인풋태그를 클릭했을 때
+        $('.autocomplete-input').click((e) => {
+            $("#modal").show();
+            const mapContainer = document.getElementById('map'), // 지도를 표시할 div
+                mapOption = {
+                    center: new kakao.maps.LatLng(37.566826, 126.9786567), // 지도의 중심좌표
+                    level: 1 // 지도의 확대 레벨
+                };
+            // 지도를 생성합니다
+            const map = new kakao.maps.Map(mapContainer, mapOption);
+            // 주소-좌표 변환 객체를 생성합니다
+            const geocoder = new kakao.maps.services.Geocoder();
+
+            const marker = new kakao.maps.Marker();// 클릭한 위치를 표시할 마커입니다
+
+            const clickedInputTag = $(e.target).attr('class').split(" ")[0];
+            if (clickedInputTag === 'start') {
+                $(".mapModalTitle")[0].innerText = '출발지';
+
+                // 지도를 클릭했을 때 클릭 위치 좌표에 대한 주소정보를 표시하도록 이벤트를 등록합니다
+                kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
+                    const latLng = mouseEvent.latLng;
+
+                    startLat.value = latLng.getLat();
+                    startLng.value = latLng.getLng();
+                    searchDetailAddrFromCoords(latLng, startCallbackFromCoords);
+                    // 마커를 클릭한 위치에 표시합니다
+                    marker.setPosition(latLng);
+                    marker.setMap(map);
+
+                });
+
+            } else if (clickedInputTag === 'arrival') {
+                $(".mapModalTitle")[0].innerText = '도착지';
+
+                // 지도를 클릭했을 때 클릭 위치 좌표에 대한 주소정보를 표시하도록 이벤트를 등록합니다
+                kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
+                    const latLng = mouseEvent.latLng;
+
+                    arrivalLat.value = latLng.getLat();
+                    arrivalLng.value = latLng.getLng();
+                    searchDetailAddrFromCoords(latLng, arrivalCallbackFromCoords);
+                    // 마커를 클릭한 위치에 표시합니다
+                    marker.setPosition(latLng);
+                    marker.setMap(map);
+
+                });
+
+            }
+
+            function searchAddrFromCoords(coords, callback) {
+                // 좌표로 행정동 주소 정보를 요청합니다
+                geocoder.coord2RegionCode(coords.getLng(), coords.getLat(), callback);
+            }
+
+            function searchDetailAddrFromCoords(coords, callback) {
+                // 좌표로 법정동 상세 주소 정보를 요청합니다
+                geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
+            }
+
+            let startCallbackFromCoords = function (result, status) {
+                if (status === kakao.maps.services.Status.OK) {
+                    // if (result[0].regionType === 'H') {
+                    //     start.value = result[0].address_name;
+                    // }
+                    start.value = !!result[0].road_address ? "도로명:" + result[0].road_address.address_name : "지번:" + result[0].address.address_name;
+                    startAddr.value = result[0].address.address_name;
+                }
+            }
+            let arrivalCallbackFromCoords = function (result, status) {
+                if (status === kakao.maps.services.Status.OK) {
+                    // if (result[0].regionType === 'H') {
+                    //     start.value = result[0].address_name;
+                    // }
+                    arrival.value = !!result[0].road_address ? "도로명:" + result[0].road_address.address_name : "지번:" + result[0].address.address_name;
+                    arrivalAddr.value = result[0].address.address_name;
+                }
+            }
+        });
+        $('#btnRegisterRoute').click((e) => {
+            e.preventDefault();
+            //hidden form에 정보를 담는다
+            //String startAddr, arrivalAddr; -완료
+            //double startLng, startLat, arrivalLng, arrivalLat; -완료
+            //Time arrivalTime; -완료
+            //String memo; 서버에서 사용
+            //LocalDateTime regdate; -서버에서 now로 등록시간 조정
+
+            const $formObj = $('#hiddenForm');
+            const str =
+                '<input type="hidden" name="startLat" value="' + startLat.value
+                + '"><input type="hidden" name="startLng" value="' + startLng.value
+                + '"><input type="hidden" name="startAddr" value="' + startAddr.value
+                + '"><input type="hidden" name="arrivalLat" value="' + arrivalLat.value
+                + '"><input type="hidden" name="arrivalLng" value="' + arrivalLng.value
+                + '"><input type="hidden" name="arrivalAddr" value="' + arrivalAddr.value
+                + '"><input type="hidden" name="arrivalTime" value="' + $('#rideTimeSelect option:selected').val()
+                + '">'
+            $formObj.append(str)
+               .attr('method', 'POST')
+               .attr('action', '/apply/register')
+               .submit();
+            $('#mapArea')[0].innerHTML = "";
+            $(".mapModalTitle")[0].innerText = '신청완료';
+            $('#modal').show();
+
+        })
+
+    });
+
+    //모달창 닫아주는 함수
+    function closeModal() {
+        $('.mapModal').hide();
+    }
+
+
+</script>
+<script type="text/javascript"
+        src="//dapi.kakao.com/v2/maps/sdk.js?appkey=1da7e0886601deed2a1c1576ae31604c&libraries=services"></script>
+</body>
+
+</html>
