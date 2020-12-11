@@ -59,13 +59,14 @@ public class ApplyController {
     // 방금 등록한 노선, 리스트에서 클릭한 노선
 
     @PostMapping("/register")
-    public void register(ApplyDTO applyDTO) {
+    public String register(@ModelAttribute("hiddenForm") ApplyDTO applyDTO) {
         //start_addr/start_lng/start_lat
         //arrival_addr/arrival_lng/arrival_lat
         //arrival_time/memo
         log.info("register POST.................");
         log.info(applyDTO.toString());
 
+        return "redirect:/apply/list";
         //return "/read/"/*+해당 노선을 등록한 글 번호로 이동 */;
     }
 
