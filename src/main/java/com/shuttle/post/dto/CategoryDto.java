@@ -1,4 +1,4 @@
-package com.shuttle.category;
+package com.shuttle.post.dto;
 
 import com.shuttle.domain.Category;
 import lombok.Builder;

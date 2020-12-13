@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 수정</title>
+</head>
+<body>
+<h1 class="mt-4">Post Register Page</h1>
+
+<div class="col-md-12">
+    <div class="col-md-4">
+        <form id="actionForm" action="/post/modify" method="post">
+            <input type="hidden" name="page" th:value="${.page}">
+            <input type="hidden" name="type" th:value="${.type}">
+            <input type="hidden" name="keyword" th:value="${.keyword}">
+            <div class="form-group">
+                <label for="id">글 번호</label>
+                <input type="text" class="form-control" id="id" th:value="${post.id}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="title">제목</label>
+                <input type="text" class="form-control" id="title" th:value="${post.title}">
+            </div>
+            <div class="form-group">
+                <label for="useId">작성자</label>
+                <input type="text" class="form-control" id="useId" th:value="${post.useId}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="content">내용</label>
+                <textarea type="text" class="form-control" id="content" value="{{post.content}}"></textarea>
+            </div>
+            <div class="form-group">
+                <label>RegDate</label>
+                <input type="text" class="form-control" name="regDate" th:value="${#temporals.format(post.createdDate,'yyyy/MM/dd HH:mm:ss')}" readonly>
+            </div>
+            <div class="form-group">
+                <label>ModDate</label>
+                <input type="text" class="form-control" name="modDate" th:value="${#temporals.format(post.modifiedDate,'yyyy/MM/dd HH:mm:ss')}" readonly>
+            </div>
+        </form>
+        <a href="/" role="button" class="btn btn-secondary">취소</a>
+        <button type="button" class="btn btn-primary" id="btn-update">수정 완료</button>
+        <button type="button" class="btn btn-danger" id="btn-delete">삭제</button>
+    </div>
+</div>
+
+<script>
+
+    const actionForm = $("#actionForm"); //form 태그 객체
+
+    $(".btn-remove").click(function() {
+        actionForm
+            .attr("action", "/post/remove")
+            .attr("method", "post");
+
+        actionForm.submit();
+    });
+
+    $(".btn-modify").click(function() {
+
+        if(confirm("수정하시겠습니까?")) {
+            actionForm.submit();
+        }
+    });
+
+    $(".btn-list").click(function() {
+
+        const pageInfo = $("input[name='page']", "input[name='type']", "input[name='keyword']");
+
+        actionForm.empty();
+        actionForm.append(pageInfo);
+        actionForm
+            .attr("action", "/post/list")
+            .attr("method", "get");
+
+        console.log(actionForm.html());
+        actionForm.submit();
+    });
+
+
+</script>
+
+</body>
+</html>

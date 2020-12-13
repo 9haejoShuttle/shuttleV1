@@ -3,7 +3,7 @@ package com.shuttle.post;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shuttle.domain.Category;
 import com.shuttle.domain.Post;
-import com.shuttle.post.PostSaveRequestDto;
+import com.shuttle.post.dto.PostSaveRequestDto;
 import com.shuttle.category.CategoryRepository;
 import com.shuttle.post.PostRepository;
 import com.shuttle.post.PostService;
@@ -66,11 +66,11 @@ class PostControllerTest {
                 .build();
 
         /*
-        *   등록 API호출
-        *   가상 환경에서 post요청으로 등록을 처리하는 api를 호출
-        *   ObjectMapper의 writeValueAsString()메서드를 이용해서 request 데이터를 JSON으로 전송한다.
-        *   (요청 API가 있는 컨트롤러가 @RestController이기 때문에 JSON타입으로 요청해야 함)
-        * */
+         *   등록 API호출
+         *   가상 환경에서 post요청으로 등록을 처리하는 api를 호출
+         *   ObjectMapper의 writeValueAsString()메서드를 이용해서 request 데이터를 JSON으로 전송한다.
+         *   (요청 API가 있는 컨트롤러가 @RestController이기 때문에 JSON타입으로 요청해야 함)
+         * */
         mockMvc.perform(post("/api/post")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -115,10 +115,10 @@ class PostControllerTest {
                 .build();
 
         /*
-        *   put매핑 되어 있는 수정 API를 호출
-        *   JSON타입 데이터를 보낸다고 명시하고,
-        *   ObjectMapper의 wrtieValueAsString()로 요청 데이터를 JSON으로 변환해서 전달한다.
-        * */
+         *   put매핑 되어 있는 수정 API를 호출
+         *   JSON타입 데이터를 보낸다고 명시하고,
+         *   ObjectMapper의 wrtieValueAsString()로 요청 데이터를 JSON으로 변환해서 전달한다.
+         * */
         mockMvc.perform(put("/api/post/"+getId())
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)

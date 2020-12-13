@@ -9,7 +9,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Entity
-public class Post {
+public class Post extends BaseTimeEntity{
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "POST_ID")
     private Long id;

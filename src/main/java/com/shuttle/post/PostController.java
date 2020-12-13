@@ -1,6 +1,9 @@
 package com.shuttle.post;
 
+import com.shuttle.post.dto.PostResponseDto;
+import com.shuttle.post.dto.PostSaveRequestDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -28,4 +31,17 @@ public class PostController {
         postService.deletePost(id);
     }
 
+    @GetMapping("/post/save")
+    public String list(Model model){
+        model.addAttribute("post", postService.allPost());
+        return "post-save";
+    }
+
+    @GetMapping("/post/update/{id}")
+    public String postUpdate(@PathVariable Long id, Model model) {
+        PostResponseDto dto = postService.findByPost(id);
+        model.addAttribute("post", dto);
+
+        return "post-update";
+    }
 }
