@@ -1,7 +1,7 @@
 package com.shuttle.post;
 
 import com.shuttle.domain.Post;
-import com.shuttle.post.PostResponseDto;
+import com.shuttle.post.dto.PostResponseDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;

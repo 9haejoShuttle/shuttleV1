@@ -1,14 +1,14 @@
-package com.shuttle.post;
+package com.shuttle.post.dto;
 
 import com.shuttle.domain.Category;
 import com.shuttle.domain.Post;
 import lombok.Getter;
 import lombok.Setter;
 /*
-*     게시물 조회 요청에 응답하기 위한 Response DTO
-*     요청을 처리하는 PostRequestSaveDto와 거의 유사하지만,
-*     관심사가 다르기 때문에 분리하였음.
-* */
+ *     게시물 조회 요청에 응답하기 위한 Response DTO
+ *     요청을 처리하는 PostRequestSaveDto와 거의 유사하지만,
+ *     관심사가 다르기 때문에 분리하였음.
+ * */
 @Getter @Setter
 public class PostResponseDto {
     private Long id;

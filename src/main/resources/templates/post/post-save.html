@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1 class="mt-4">Post Register Page</h1>
+
+<div class="col-md-12">
+    <div class="col-md-4">
+        <form>
+            <div class="form-group">
+                <label>제목</label>
+                <input type="text" class="form-control" name="title" placeholder="제목을 입력하세요">
+            </div>
+            <div class="form-group">
+                <label>작성자</label>
+                <input type="text" class="form-control" name="writer" placeholder="작성자를 입력하세요">
+            </div>
+            <div class="form-group">
+                <label>내용</label>
+                <textarea class="form-control" rows="5" name="content"  placeholder="내용을 입력하세요"></textarea>
+            </div>
+        </form>
+        <a href="/post/list" role="button" class="btn btn-secondary">취소</a>
+        <button type="button" class="btn btn-primary" id="btn-save">등록</button>
+    </div>
+</div>
+
+</body>
+</html>
