@@ -28,17 +28,11 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserDetailRepository userDetailRepository;
 
     @Override
     public String signup(UserSignupRequestDto userSignupRequestDto) {
-        User user = User.builder()
-                .phone(userSignupRequestDto.getPhone())
-                .name(userSignupRequestDto.getName())
-                .password(passwordEncoder.encode(userSignupRequestDto.getPassword()))    //TODO PasswordEncoder 적용
-                .build();
-
-        User newUser = userRepository.save(user);
+        User dtoToEntity = getUserSignupDtoToEntity(userSignupRequestDto);
+        User newUser = userRepository.save(dtoToEntity);
 
         login(newUser);
 
@@ -47,23 +41,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updatePassword(User user, PasswordUpdateRequestDto passwordUpdateRequestDto) {
-        User targetUser = userRepository.findById(user.getId()).get();
+        User targetUser = findByUser(user);
         targetUser.updatePassword(passwordEncoder.encode(passwordUpdateRequestDto.getPassword()));
     }
 
 
     @Override
     public void disable(User user) {
-        User targetUser = userRepository.findById(user.getId())
-                .orElseThrow(() -> new IllegalArgumentException(user.getName() + "존재하지 않는 유저입니다."));
+        User targetUser = findByUser(user);
 
         targetUser.setEnable(false);
     }
 
     @Override
     public String sendToken(String phone) {
-        User targetUser = userRepository.findByPhone(phone)
-                .orElseThrow(() -> new IllegalArgumentException(phone + " 존재하지 않는 사용자입니다."));
+        User targetUser = findByUser(phone);
 
         String token = UUID.randomUUID().toString().substring(0, 5);
 
@@ -76,8 +68,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean checkToken(CheckTokenRequestDto checkTokenRequestDto) {
-        User targetUser = userRepository.findByPhone(checkTokenRequestDto.getPhone())
-                .orElseThrow(() -> new IllegalArgumentException(checkTokenRequestDto.getPhone() + " 존재하지 않는 사용자입니다."));
+        User targetUser = findByUser(checkTokenRequestDto.getPhone());
 
         return userTokenEqualsInputToken(targetUser, checkTokenRequestDto.getToken().trim());
     }
@@ -107,8 +98,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public UserDetails loadUserByUsername(String phone) throws UsernameNotFoundException {
-        User loginUser = userRepository.findByPhone(phone)
-                .orElseThrow(() -> new IllegalArgumentException(phone + "은 존재하지 않는 사용자입니다."));
+        User loginUser = findByUser(phone);
 
         if (disableUser(loginUser)) {
             throw new IllegalArgumentException(loginUser.getPhone() + "은 탈퇴한 유저입니다.");
@@ -122,5 +112,33 @@ public class UserServiceImpl implements UserService {
 
     private boolean disableUser(User loginUser) {
         return !loginUser.isEnable();
+    }
+
+    private <T> User findByUser(T phoneOrUser) {
+        if (phoneOrUser instanceof User) {
+            User user = (User) phoneOrUser;
+            return userRepository.findById(user.getId())
+                    .orElseThrow(() -> new IllegalArgumentException(user.getName() + "존재하지 않는 유저입니다."));
+        }
+
+        if (phoneOrUser instanceof String) {
+            String phone = (String) phoneOrUser;
+            return userRepository.findByPhone(phone)
+                    .orElseThrow(() -> new IllegalArgumentException(phone + " 존재하지 않는 사용자입니다."));
+        }
+
+        throw new IllegalArgumentException("입력값에 오류가 있습니다.");
+    }
+
+    private User getUserSignupDtoToEntity(UserSignupRequestDto userSignupRequestDto) {
+        return User.builder()
+                .phone(userSignupRequestDto.getPhone())
+                .name(userSignupRequestDto.getName())
+                .password(passwordEncode(userSignupRequestDto.getPassword()))    //TODO PasswordEncoder 적용
+                .build();
+    }
+
+    private String passwordEncode(String password) {
+        return passwordEncoder.encode(password);
     }
 }
