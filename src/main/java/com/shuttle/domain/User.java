@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Getter @AllArgsConstructor @NoArgsConstructor
 @Entity
@@ -35,6 +37,9 @@ public class User {
     @Column(nullable = true)
     private boolean tokenVerified;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private UserDetail userDetail;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -46,6 +51,14 @@ public class User {
         this.name =name;
         this.enable = true;
         this.role = Role.USER;
+    }
+
+    public void updateLastLoginTimeInUserDetail() {  //로그인 시 UserDetail 자동 추가
+        if (Objects.isNull(this.getUserDetail())) {
+            this.userDetail = new UserDetail(this);
+        }
+
+        this.getUserDetail().setLoginDate(LocalDateTime.now());
     }
 
     public String getRoleKey() {

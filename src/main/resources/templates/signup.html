@@ -17,12 +17,14 @@
                     <h2 class="form-title">회원가입</h2>
                     <div class="form-group">
                         <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
-                        <input type="text" name="name" id="name" placeholder="이름을 입력하세요." value="미리">
+                        <input type="text" name="name" id="name" placeholder="이름을 입력하세요." value="미리" aria-describedby="nameHelp">
+                        <small id="nameHelp">한글 또는 영문으로 입력하세요.</small>
                     </div>
                     <div class="form-group">
                         <label for="phone"><i class="zmdi zmdi-smartphone-iphone"></i></label>
                         <input type="text" id="phone" class="form-control" aria-describedby="idHelp"
                                placeholder="핸드폰 번호를 입력하세요." required minlength="4" maxlength="20" value="01012341234">
+                        <small id="idHelp">기호 없이 숫자만 입력하세요. ex)01012341234</small>
                     </div>
 
                     <div class="form-group">
@@ -34,12 +36,13 @@
 
                     <div class="form-group">
                         <label for="passwordConfirm"><i class="zmdi zmdi-lock-outline"></i></label>
-                        <input type="password" id="passwordConfirm" placeholder="비밀번호 확인" value="asdf1234"
+                        <input type="password" id="passwordConfirm" placeholder="비밀번호 확인" value="asdf1234" aria-describedby="passwordConfirmHelp"
                                required minlength="8" maxlength="12">
+                        <small id="passwordConfirmHelp"></small>
                     </div>
                     <div class="form-group">
-                        <input type="checkbox" name="agree-term" id="agree-term" class="agree-term">
-                        <label for="agree-term" class="label-agree-term"><span><span></span></span>이용 동의 <a href="#" class="term-service">개인 정보 약관</a></label>
+                        <input type="checkbox" id="agree-check" name="agree-term" class="agree-term">
+                        <label for="agree-check" class="label-agree-term"><span><span></span></span>이용 동의 <a href="#" class="term-service">개인 정보 약관</a></label>
                     </div>
                     <div class="form-group form-button">
                         <input type="submit" id="btn-signup" class="form-submit" value="가입">
@@ -58,11 +61,17 @@
     <script>
         const header = document.getElementsByName('_csrf_header')[0].content;
         const token = document.getElementsByName('_csrf')[0].content;
+        const agreeCheck = document.getElementById('agree-check');
 
         let index = {
             init : function () {
                 $('#btn-signup').on('click', ()=> {
-                    this.signup();
+                    console.log();
+                    if (agreeCheck.checked) {
+                        this.signup();
+                        return;
+                    }
+                    alert('개인정보 이용약관에 동의하세요.');
                 })
             },
 
@@ -87,9 +96,7 @@
                     alert(response+'님 가입을 축하합니다');
                     window.location.href="/";
                 }).fail(function (error){
-                    alert('뭔가 오류가 있습니다. 개발자 도구 콘솔을 확인하세요.');
-                    console.log(JSON.stringify(error));
-                    console.log(error);
+                    alert(error.responseText);
                 })
             }
         } //index
