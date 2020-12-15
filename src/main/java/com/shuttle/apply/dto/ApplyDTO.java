@@ -3,14 +3,18 @@
  */
 package com.shuttle.apply.dto;
 
+import com.shuttle.domain.Apply;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.sql.Time;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Builder
 @Getter
+@ToString
 public class ApplyDTO {
     /* DB상의 Apply 테이블에 들어간 칼럼들
     apply_id, user_id,
@@ -22,10 +26,26 @@ public class ApplyDTO {
 
     private final String startAddr, arrivalAddr;
     private final double startLng, startLat, arrivalLng, arrivalLat;
-    private final Time arrivalTime;
+    private final long arrivalTime;
     private final String memo;
-    private final LocalDateTime regdate;
+    private final String regdate;
 
+
+    public static LocalDateTime stirngToLocalDateTimeConverter(String source) {
+        return LocalDateTime.parse(source, DateTimeFormatter.ISO_DATE_TIME);
+    }
     /*regdate 받아온 값을 localdatetime 으로 변경하는 메소드 만들기*/
+    public Apply dataToDomain(ApplyDTO applyDTO){
+        return Apply.builder()
+                .startAddr(applyDTO.startAddr)
+                .startLat(applyDTO.startLat)
+                .startLng(applyDTO.startLng)
+                .arrivalAddr(applyDTO.arrivalAddr)
+                .arrivalLat(applyDTO.arrivalLat)
+                .arrivalLng(applyDTO.arrivalLng)
+                .arrivalTime(new Time(arrivalTime))
+                .regdate(stirngToLocalDateTimeConverter(applyDTO.regdate))
+                .build();
+    }
 
 }
