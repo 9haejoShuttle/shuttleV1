@@ -32,7 +32,7 @@ class PaymentControllerTest {
         paymentRepository.deleteAll();
     }
 
-    @DisplayName("결제 성공 데이터 추가")
+    @DisplayName("결제 성공 응답 데이터 DB에 저장")
     @WithAccount("12341234")
     @Test
     void test_payment_success () throws Exception {
