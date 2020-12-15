@@ -37,7 +37,9 @@ public class StationService {
                     .collect(Collectors.toList());
             stationRepository.saveAll(stationList);
         }
-
     }
 
+    public List<Station> findAllStation() {
+        return stationRepository.findAll();
+    }
 }

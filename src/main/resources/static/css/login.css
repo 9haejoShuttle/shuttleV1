@@ -308,7 +308,7 @@ label {
     -ms-transform: translateY(-50%);
     color: #222; }
 
-label[for=password] {
+label[for=password], label[for=name], label[for=phone] {
     height: 47px;
 }
 

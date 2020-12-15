@@ -21,20 +21,21 @@ package com.shuttle.apply.controller;
 
 import com.shuttle.apply.dto.ApplyDTO;
 import com.shuttle.apply.service.ApplyService;
-import com.shuttle.domain.Apply;
+import com.shuttle.user.dto.UserSignupRequestDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import javax.validation.Valid;
 
-//로그인 예외 설정 어노테이션이라서 추가했는데 작동 X
-//@EnableAutoConfiguration(exclude = {SecurityAutoConfiguration.class})
 @RequiredArgsConstructor
-@RestController
+@Controller
 @RequestMapping("/apply")
+@Log4j2
 public class ApplyController {
     ApplyService applyService;
 
@@ -42,12 +43,13 @@ public class ApplyController {
     @GetMapping("/list")
     public void list(Model model) {
 //        if(applyService.getAppliedList()!=null)
-  //          model.addAttribute("Applies", applyService.getAppliedList());
+        //          model.addAttribute("Applies", applyService.getAppliedList());
     }
 
     //신청
     @GetMapping("/register")
     public void register() {
+        log.info("register GET.................");
         //새로 신청할 때 들어올 화면
         //그 값을 받아서 화면에서 포스트메서드로 보내줌
     }
@@ -55,13 +57,17 @@ public class ApplyController {
     //신청내용 등록 Post
     // 신청내역 조회 applyid 로 조회
     // 방금 등록한 노선, 리스트에서 클릭한 노선
+
     @PostMapping("/register")
-    public String register(@RequestBody ApplyDTO applyDTO) {
+    public String register(@ModelAttribute("hiddenForm") ApplyDTO applyDTO) {
         //start_addr/start_lng/start_lat
         //arrival_addr/arrival_lng/arrival_lat
         //arrival_time/memo
+        log.info("register POST.................");
+        log.info(applyDTO.toString());
 
-        return "/read/"/*+해당 노선을 등록한 글 번호로 이동 */;
+        return "redirect:/apply/list";
+        //return "/read/"/*+해당 노선을 등록한 글 번호로 이동 */;
     }
 
     @GetMapping("/read/{id}")

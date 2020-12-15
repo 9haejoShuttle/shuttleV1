@@ -3,6 +3,7 @@ package com.shuttle.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.sql.Time;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor
 @Getter
+@ToString
 public class Apply {
 
     @Id
@@ -21,12 +23,10 @@ public class Apply {
     private long userId;
 
     private String startAddr;
-    private long startLng;
-    private long startLat;
+    private double startLng, startLat;
 
     private String arrivalAddr;
-    private long arrivalLng;
-    private long arrivalLat;
+    private double arrivalLng, arrivalLat;
 
     private Time arrivalTime;
     private String memo;

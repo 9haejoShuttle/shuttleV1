@@ -1,6 +1,8 @@
 package com.shuttle.post;
 
 import com.shuttle.domain.Post;
+import com.shuttle.post.dto.PostResponseDto;
+import com.shuttle.post.dto.PostSaveRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +43,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deletePost(Long id) {
+        Post existingPost = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 없습니다. id : "+id));
         postRepository.deleteById(id);
     }
 
