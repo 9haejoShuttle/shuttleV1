@@ -1,31 +1,51 @@
 package com.shuttle.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor @AllArgsConstructor @Builder
 @Entity
 public class Payment {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PAYMENT_ID")
-    Long id;
+    private Long id;
 
     @ManyToOne
-    User user;
+    @JoinColumn(name = "USER_ID")
+    private User user;
 
-    @Column(name = "PAYMENT_METHOD", nullable = false)
-    String paymentMethod;
+    private String applyNum;
+
+    private String buyerEmail;
+
+    private int cardQuaota;
+
+    private String impUid;  //아임포트 결제 ID
+
+    private String merchantUid; //아임포트에서 주는 클라이언트 고유 ID
+
+    private String name;
 
     @Column(nullable = false)
-    Long amount;
+    private Long paidAmount;
 
-    @Column(name = "PAYMENT_DATE", nullable = false)
-    @CreatedDate
-    LocalDateTime paymentDate;
+    @Column(nullable = false)
+    private String payMethod;
 
+    @Column(nullable = false)
+    private LocalDateTime paidAt;
+
+    private String provider;
+
+    private String pgTid;
+
+    private String pgType;
+
+    private boolean success;
 }

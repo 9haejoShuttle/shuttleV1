@@ -1,6 +1,7 @@
 package com.shuttle.user;
 
 import com.shuttle.domain.User;
+import com.shuttle.payment.PaymentService;
 import com.shuttle.user.dto.CheckTokenRequestDto;
 import com.shuttle.user.dto.PasswordUpdateRequestDto;
 import com.shuttle.user.dto.UserSignupRequestDto;
@@ -21,6 +22,7 @@ import javax.validation.Valid;
 @Controller
 public class UserController {
 
+    private final PaymentService paymentService;
     private final UserService userService;
     private final SignupValidator signupValidator;
     private final PasswordUpdateValidator passwordUpdateValidator;
@@ -43,9 +45,10 @@ public class UserController {
         webDataBinder.addValidators(passwordUpdateValidator);
     }
 
-    @GetMapping("/mypage/payment")
+    @GetMapping(URL_MYPAGE+"/payment")
     public void paymentForm(@CurrentUser User user, Model model) {
         model.addAttribute("user", user);
+        model.addAttribute("paymentHistory", paymentService.findAll());
     }
 
     @GetMapping("/login")

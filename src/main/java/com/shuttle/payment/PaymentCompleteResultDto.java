@@ -1,10 +1,17 @@
 package com.shuttle.payment;
 
 
+import com.shuttle.domain.Payment;
+import com.shuttle.domain.User;
 import lombok.*;
 
-@Getter @Setter @ToString
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.TimeZone;
+
+@Getter @Setter @ToString @Builder
 public class PaymentCompleteResultDto {
+    private User user;
     private String applyNum;
     private String buyerEmail;
     private int cardQuaota;
@@ -18,4 +25,33 @@ public class PaymentCompleteResultDto {
     private String pgTid;
     private String pgType;
     private boolean success;
+
+    public Payment toEntity(User user) {
+
+//        Timestamp unixTime = Timestamp.valueOf(paidAt);
+
+        long epochtime = Long.parseLong(paidAt);
+
+        LocalDateTime unixTimeToLocalDateTime =
+                LocalDateTime.ofInstant(Instant.ofEpochSecond(epochtime),
+                        TimeZone.getDefault().toZoneId());
+
+
+        return Payment.builder()
+                .user(user)
+                .applyNum(applyNum)
+                .buyerEmail(buyerEmail)
+                .cardQuaota(cardQuaota)
+                .impUid(impUid)
+                .merchantUid(merchantUid)
+                .name(name)
+                .paidAmount(paidAmount)
+                .payMethod(payMethod)
+                .paidAt(unixTimeToLocalDateTime)
+                .provider(provider)
+                .pgTid(pgTid)
+                .pgType(pgType)
+                .success(success)
+                .build();
+    }
 }
