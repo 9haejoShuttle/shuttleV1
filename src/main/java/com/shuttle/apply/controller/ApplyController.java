@@ -19,18 +19,15 @@
  */
 package com.shuttle.apply.controller;
 
-import com.shuttle.apply.dto.ApplyDTO;
 import com.shuttle.apply.service.ApplyService;
-import com.shuttle.user.dto.UserSignupRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequiredArgsConstructor
 @Controller
@@ -58,17 +55,7 @@ public class ApplyController {
     // 신청내역 조회 applyid 로 조회
     // 방금 등록한 노선, 리스트에서 클릭한 노선
 
-    @PostMapping("/register")
-    public String register(@ModelAttribute("hiddenForm") ApplyDTO applyDTO) {
-        //start_addr/start_lng/start_lat
-        //arrival_addr/arrival_lng/arrival_lat
-        //arrival_time/memo
-        log.info("register POST.................");
-        log.info(applyDTO.toString());
 
-        return "redirect:/apply/list";
-        //return "/read/"/*+해당 노선을 등록한 글 번호로 이동 */;
-    }
 
     @GetMapping("/read/{id}")
     public void read(@PathVariable("id") long id) {
