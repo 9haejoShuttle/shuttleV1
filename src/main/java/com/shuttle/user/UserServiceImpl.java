@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
         User loginUser = findByUser(phone);
 
         if (disableUser(loginUser)) {
-            throw new IllegalArgumentException(loginUser.getPhone() + "은 탈퇴한 유저입니다.");
+            throw new IllegalArgumentException(loginUser.getPhone() + "은 탈퇴a한 유저입니다.");
         }
 
         //최근 로그인 시간 갱신
