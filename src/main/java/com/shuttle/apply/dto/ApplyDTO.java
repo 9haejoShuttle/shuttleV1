@@ -23,7 +23,7 @@ public class ApplyDTO {
     arrival_time
     memo, regdate
     */
-
+    private final long userId;
     private final String startAddr, arrivalAddr;
     private final double startLng, startLat, arrivalLng, arrivalLat;
     private final long arrivalTime;
@@ -37,6 +37,7 @@ public class ApplyDTO {
     /*regdate 받아온 값을 localdatetime 으로 변경하는 메소드 만들기*/
     public Apply dataToDomain(ApplyDTO applyDTO){
         return Apply.builder()
+                .userId(applyDTO.userId)
                 .startAddr(applyDTO.startAddr)
                 .startLat(applyDTO.startLat)
                 .startLng(applyDTO.startLng)
@@ -44,6 +45,7 @@ public class ApplyDTO {
                 .arrivalLat(applyDTO.arrivalLat)
                 .arrivalLng(applyDTO.arrivalLng)
                 .arrivalTime(new Time(arrivalTime))
+                .memo(""+applyDTO.memo)
                 .regdate(stirngToLocalDateTimeConverter(applyDTO.regdate))
                 .build();
     }
