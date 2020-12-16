@@ -179,31 +179,36 @@
         //루트등록버튼
         $('#btnRegisterRoute').click((e) => {
             e.preventDefault();
-            let date=new Date();
+            let date = new Date();
             let token = $("meta[name='_csrf']").attr("content");
             let header = $("meta[name='_csrf_header']").attr("content");
-            $(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+            $(document).ajaxSend(function (e, xhr, options) {
+                xhr.setRequestHeader(header, token);
+            });
             const applyDTO = {
-                startLat   : startLat.value,
-                startLng   : startLng.value,
-                startAddr : startAddr.value,
-                arrivalLat   : arrivalLat.value,
-                arrivalLng   : arrivalLng.value,
-                arrivalAddr : arrivalAddr.value,
-                arrivalTime   : $('#rideTimeSelect option:selected').val(),
-                regtime :  date.toISOString()
-            }
+                startLat: startLat.value,
+                startLng: startLng.value,
+                startAddr: startAddr.value,
+                arrivalLat: arrivalLat.value,
+                arrivalLng: arrivalLng.value,
+                arrivalAddr: arrivalAddr.value,
+                arrivalTime: $('#rideTimeSelect option:selected').val(),
+                memo:"",
+                regdate: "" + date.toISOString()
+        }
+            console.log(applyDTO)
 
             $.ajax({
-                type : 'POST',
-                url : '/apply/register',
-                contentType : 'application/json; charset=UTF-8',
-                data : JSON.stringify(applyDTO),
-                beforeSend : function (xhr) {
+                type: 'POST',
+                url: '/apply/register',
+                contentType: 'application/json; charset=UTF-8',
+                data: JSON.stringify(applyDTO),
+                beforeSend: function (xhr) {
                     xhr.setRequestHeader(header, token);
                 }
             }).done(function (response) {
-            }).fail(function (error){
+                console.log(JSON.stringify(response))
+            }).fail(function (error) {
                 console.log(JSON.stringify(error));
                 console.log(error);
             })

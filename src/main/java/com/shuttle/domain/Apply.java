@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @ToString
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
 public class Apply {
 
     @Id
@@ -36,7 +36,6 @@ public class Apply {
 
     @CreatedDate
     private LocalDateTime regdate;
-
 
 }
 
