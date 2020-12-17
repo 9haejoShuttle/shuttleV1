@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Log4j2
 public class ApplyServiceImpl implements ApplyService {
 
-    ApplyRepository applyRepository;
+    private final ApplyRepository applyRepository;
 
     @Override
     public Apply register(ApplyDTO applyDTO) {

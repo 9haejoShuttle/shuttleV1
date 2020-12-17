@@ -48,7 +48,7 @@ class ApplyApiControllerTest {
                 .regdate("2020-12-15T07:25:46.957Z")
                 .build();
 
-        mockMvc.perform(post("/apply/regiser")
+        mockMvc.perform(post("/apply/register")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(new ObjectMapper().writeValueAsString(applyDTO)))
