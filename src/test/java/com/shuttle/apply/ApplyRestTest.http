@@ -1,0 +1,15 @@
+#GET localhost:8000/apply/register
+
+POST localhost:8000/apply/register
+Content-Type: 'application/json; charset=UTF-8'
+{
+  "startLat": "123",
+  "startLng": "77",
+  "startAddr": "서울시",
+  "arrivalLat": "127",
+  "arrivalLng": "33",
+  "arrivalAddr": "글쎄다",
+  "arrivalTime": 710,
+  "regtime":  "2020. 12. 15. 오후 1:25:38.850"
+}
+

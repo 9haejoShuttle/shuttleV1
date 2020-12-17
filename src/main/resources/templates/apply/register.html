@@ -2,6 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <title>구해줘 셔틀</title>
     <!--css링크 href="../css/apply.css" 로 추후 수정예정. 현재 html에서 바로 적용해서 보기 위해 임시로 걸어둔 링크 -->
     <link rel="stylesheet" type="text/css" href="../css/apply.css">
@@ -81,8 +83,6 @@
         </div>
     </div>
 </div>
-<form id="hiddenForm"">
-</form>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"
         integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
 <script>
@@ -175,30 +175,43 @@
                 }
             }
         });
+
+        //루트등록버튼
         $('#btnRegisterRoute').click((e) => {
             e.preventDefault();
-            //hidden form에 정보를 담는다
-            //String startAddr, arrivalAddr; -완료
-            //double startLng, startLat, arrivalLng, arrivalLat; -완료
-            //Time arrivalTime; -완료
-            //String memo; 서버에서 사용
-            //LocalDateTime regdate; -서버에서 now로 등록시간 조정
+            let date = new Date();
+            let token = $("meta[name='_csrf']").attr("content");
+            let header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function (e, xhr, options) {
+                xhr.setRequestHeader(header, token);
+            });
+            const applyDTO = {
+                startLat: startLat.value,
+                startLng: startLng.value,
+                startAddr: startAddr.value,
+                arrivalLat: arrivalLat.value,
+                arrivalLng: arrivalLng.value,
+                arrivalAddr: arrivalAddr.value,
+                arrivalTime: $('#rideTimeSelect option:selected').val(),
+                memo:"",
+                regdate: "" + date.toISOString()
+        }
+            console.log(applyDTO)
 
-            const $formObj = $('#hiddenForm');
-            const str =
-                '<input type="hidden" th:field="startLat" value="' + startLat.value
-                + '"><input type="hidden" th:field="startLng" value="' + startLng.value
-                + '"><input type="hidden" th:field="startAddr" value="' + startAddr.value
-                + '"><input type="hidden" th:field="arrivalLat" value="' + arrivalLat.value
-                + '"><input type="hidden" th:field="arrivalLng" value="' + arrivalLng.value
-                + '"><input type="hidden" th:field="arrivalAddr" value="' + arrivalAddr.value
-                + '"><input type="hidden" th:field="arrivalTime" value="' + $('#rideTimeSelect option:selected').val()
-                + '">'
-
-
-            $formObj.append(str)
-                .attr('th:action', '@{/apply/register}')
-                .attr('method', 'POST')
+            $.ajax({
+                type: 'POST',
+                url: '/apply/register',
+                contentType: 'application/json; charset=UTF-8',
+                data: JSON.stringify(applyDTO),
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token);
+                }
+            }).done(function (response) {
+                console.log(JSON.stringify(response))
+            }).fail(function (error) {
+                console.log(JSON.stringify(error));
+                console.log(error);
+            })
         })
 
     });

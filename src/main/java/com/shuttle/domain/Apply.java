@@ -1,9 +1,8 @@
 package com.shuttle.domain;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import com.sun.istack.Nullable;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.sql.Time;
@@ -13,6 +12,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @ToString
+@Builder
+@AllArgsConstructor
 public class Apply {
 
     @Id
@@ -20,6 +21,7 @@ public class Apply {
     @Column(name = "APPLY_ID")
     private long applyId;
 
+    @Column(nullable = false)
     private long userId;
 
     private String startAddr;
@@ -29,9 +31,11 @@ public class Apply {
     private double arrivalLng, arrivalLat;
 
     private Time arrivalTime;
-    private String memo;
-    private LocalDateTime regdate;
 
+    private String memo;
+
+    @CreatedDate
+    private LocalDateTime regdate;
 
 }
 
