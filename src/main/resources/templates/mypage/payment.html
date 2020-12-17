@@ -4,28 +4,19 @@
     <meta charset="UTF-8">
     <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <meta name="_csrf" th:content="${_csrf.token}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
     <title>결제</title>
-    <style>
-        table {
-            border: 1px solid salmon;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 2px solid salmon;
-        }
-
-    </style>
 </head>
 <body>
+<h2>결제할 노선</h2>
+<button id="btn-payment" class="btn btn-outline-success">결제하기</button>
 
-<button id="btn-payment">결제</button>
+<h2 th:text="${user.name} + '님의 결제 내역'"></h2>
 
-<p th:text="${user.name} + '님의 결제 내역'"></p>
-
-<table>
-    <thead>
+<table class="table table-hover">
+    <thead class="table-dark">
         <tr>
-            <th>No</th>
+            <th scope="col">No</th>
             <th>결제 내용</th>
             <th>금액</th>
             <th>결제 방법</th>
@@ -44,7 +35,6 @@
         </tr>
     </tbody>
 </table>
-
 
 
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"
