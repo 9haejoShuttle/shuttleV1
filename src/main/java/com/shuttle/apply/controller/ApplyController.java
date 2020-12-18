@@ -22,6 +22,9 @@ package com.shuttle.apply.controller;
 import com.shuttle.apply.service.ApplyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,10 +40,8 @@ public class ApplyController {
     ApplyService applyService;
 
     //전체 신청내용
-    @GetMapping("/list")
+    @GetMapping(value = {"/list", "/"})
     public void list(Model model) {
-//        if(applyService.getAppliedList()!=null)
-        //          model.addAttribute("Applies", applyService.getAppliedList());
     }
 
     //신청
@@ -51,21 +52,11 @@ public class ApplyController {
         //그 값을 받아서 화면에서 포스트메서드로 보내줌
     }
 
-    //신청내용 등록 Post
-    // 신청내역 조회 applyid 로 조회
-    // 방금 등록한 노선, 리스트에서 클릭한 노선
-
 
 
     @GetMapping("/read/{id}")
     public void read(@PathVariable("id") long id) {
 
-    }
-
-    //내 노선 삭제
-    @PostMapping("/delete")
-    public void delete() {
-        //서비스에 노선삭제 메서드 추가
     }
 
 }

@@ -21,4 +21,15 @@ public class ApplyServiceImpl implements ApplyService {
         log.info(applyDTO.dataToDomain(applyDTO).toString());
         return applyRepository.save(applyDTO.dataToDomain(applyDTO));
     }
+
+    @Override
+    public boolean remove(String applyId) {
+        try {
+            Apply apply = applyRepository.findById(applyId).get();
+            applyRepository.delete(apply);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }}
 }

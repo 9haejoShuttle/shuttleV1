@@ -6,10 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -19,6 +16,9 @@ public class ApplyApiController {
 
     private final ApplyService applyService;
 
+    //신청내용 등록 Post
+    // 신청내역 조회 applyid 로 조회
+
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody ApplyDTO applyDTO) {
         //start_addr/start_lng/start_lat
@@ -27,11 +27,19 @@ public class ApplyApiController {
         log.info("register POST.................");
         log.info(applyDTO.toString());
 
-        if (applyService.register(applyDTO)!=null) {
+        if (applyService.register(applyDTO) != null) {
             log.info("ApplyRegister : true");
             return new ResponseEntity<>("success", HttpStatus.OK);
         }
         log.info("ApplyRegister : false");
         return new ResponseEntity<>("fail", HttpStatus.NOT_FOUND);
+    }
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> removeApplyAction(@RequestParam("applyId") String applyId){
+        if (applyService.remove(applyId))
+            return new ResponseEntity<>("removeApplyAction success", HttpStatus.OK);
+
+        return new ResponseEntity<>("removeApplyAction fail", HttpStatus.NOT_FOUND);
+
     }
 }
