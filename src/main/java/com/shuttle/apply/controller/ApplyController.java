@@ -39,10 +39,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ApplyController {
     ApplyService applyService;
 
-    //전체 신청내용
-    @GetMapping(value = {"/list", "/"})
-    public void list(Model model) {
-    }
 
     //신청
     @GetMapping("/register")

@@ -23,9 +23,9 @@ public class ApplyServiceImpl implements ApplyService {
     }
 
     @Override
-    public boolean remove(String applyId) {
+    public boolean remove(long applyId) {
         try {
-            Apply apply = applyRepository.findById(applyId).get();
+            Apply apply = applyRepository.findByApplyId(applyId);
             applyRepository.delete(apply);
             return true;
         } catch (Exception e) {

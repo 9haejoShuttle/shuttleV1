@@ -21,20 +21,30 @@ public class Apply {
     @Column(name = "APPLY_ID")
     private long applyId;
 
+    // user Table과는 연결하지 않기로 함.
+    // 현재 운행노선일 경우, 탈퇴 시 해당 신청 노선이 삭제 될 위험이 있음.
     @Column(nullable = false)
     private long userId;
 
+    @Column(nullable = false)
     private String startAddr;
+
+    @Column(nullable = false)
     private double startLng, startLat;
 
+    @Column(nullable = false)
     private String arrivalAddr;
+    @Column(nullable = false)
     private double arrivalLng, arrivalLat;
 
+    @Column(nullable = false)
     private Time arrivalTime;
 
+    @Column(nullable = false)
     private String memo;
 
     @CreatedDate
+    @Column(nullable = false)
     private LocalDateTime regdate;
 
 }

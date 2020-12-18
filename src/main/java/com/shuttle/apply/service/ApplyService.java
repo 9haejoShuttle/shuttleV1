@@ -6,6 +6,6 @@ import com.shuttle.domain.Apply;
 public interface ApplyService {
     Apply register(ApplyDTO applyDTO);
 
-    boolean remove(String applyId);
+    boolean remove(long applyId);
 }
 
