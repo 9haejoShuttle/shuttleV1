@@ -20,8 +20,10 @@
 package com.shuttle.apply.controller;
 
 import com.shuttle.apply.service.ApplyService;
+import com.shuttle.domain.Apply;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -32,13 +34,25 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/apply")
 @Log4j2
 public class ApplyController {
-    ApplyService applyService;
 
+    private final ApplyService applyService;
+
+    @GetMapping(value = {"/{page}"})
+    public void list(Model model, @PathVariable("page") int page) {
+
+        int size = 10;
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("regdate").descending());
+        Page<Apply> result = applyService.getApplyPageList(pageable);
+
+    }
 
     //신청
     @GetMapping("/register")
@@ -47,7 +61,6 @@ public class ApplyController {
         //새로 신청할 때 들어올 화면
         //그 값을 받아서 화면에서 포스트메서드로 보내줌
     }
-
 
 
     @GetMapping("/read/{id}")

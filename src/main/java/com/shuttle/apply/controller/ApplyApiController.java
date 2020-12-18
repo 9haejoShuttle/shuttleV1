@@ -27,7 +27,7 @@ public class ApplyApiController {
 
         if (applyService.register(applyDTO) != null) {
             log.info("ApplyRegister : true");
-            return new ResponseEntity<>("registerApplyAction success, appliedId: "+applyService.register(applyDTO).getApplyId(), HttpStatus.OK);
+            return new ResponseEntity<>("registerApplyAction success, appliedId :"+applyService.register(applyDTO).getApplyId(), HttpStatus.OK);
         }
         log.info("ApplyRegister : false");
         return new ResponseEntity<>("registerApplyAction fail", HttpStatus.NOT_FOUND);

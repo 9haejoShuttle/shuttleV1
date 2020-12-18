@@ -5,6 +5,8 @@ import com.shuttle.apply.repository.ApplyRepository;
 import com.shuttle.domain.Apply;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,4 +34,9 @@ public class ApplyServiceImpl implements ApplyService {
             e.printStackTrace();
             return false;
         }}
+
+    @Override
+    public Page<Apply> getApplyPageList(Pageable pageable) {
+        return applyRepository.getApplyPageListByApplyId(pageable);
+    }
 }
