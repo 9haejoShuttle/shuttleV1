@@ -9,5 +9,7 @@ public interface ApplyService {
     Apply register(ApplyDTO applyDTO);
     boolean remove(long applyId);
     Page<Apply> getApplyPageListByApplyId(Pageable pageable);
+
+    Apply selectApply(long applyId);
 }
 

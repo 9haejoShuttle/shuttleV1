@@ -24,18 +24,28 @@ public class ApplyApiController {
     private final ApplyService applyService;
 
     @GetMapping("/list/{page}")
-    public Page<Apply> readApplyWithPageAction(@PathVariable @Valid final int page){
-
-        // TODO : 기본은 날짜 역순인데 조건을 줄 수 있도록 수정할 예정
+    public Page<Apply> readApplyWithPageAction(@PathVariable @Valid final int page) {
+        //추후 할 일
         final int SIZE = 10;
         Pageable pageable = PageRequest.of(page, SIZE, Sort.by("regdate").descending());
 
         return applyService.getApplyPageListByApplyId(pageable);
     }
+
     //신청 내용 보내는 method Return 값이 없는데...
     @GetMapping("/register")
     public void register() {
         log.info("register GET.................");
+    }
+
+    @GetMapping("/complete")
+    private String complete() {
+        return "applyComplete";
+    }
+
+    @GetMapping("/read/{applyId}")
+    public Apply read(@PathVariable("applyId") long applyId) {
+        return applyService.selectApply(applyId);
     }
 
     //신청내용 등록 Post
@@ -49,24 +59,18 @@ public class ApplyApiController {
 
         if (applyService.register(applyDTO) != null) {
             log.info("ApplyRegister : true");
-            return new ResponseEntity<>("registerApplyAction success, appliedId :"+applyService.register(applyDTO).getApplyId(), HttpStatus.OK);
+            return new ResponseEntity<>("registerApplyAction success, appliedId :" + applyService.register(applyDTO).getApplyId(), HttpStatus.OK);
         }
         log.info("ApplyRegister : false");
         return new ResponseEntity<>("registerApplyAction fail", HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<String> removeApplyAction(@RequestParam("applyId") long applyId){
+    public ResponseEntity<String> removeApplyAction(@RequestParam("applyId") long applyId) {
         if (applyService.remove(applyId))
             return new ResponseEntity<>("removeApplyAction success", HttpStatus.OK);
 
         return new ResponseEntity<>("removeApplyAction fail", HttpStatus.NOT_FOUND);
-
-    }
-
-
-    @GetMapping("/read/{id}")
-    public void read(@PathVariable("id") long id) {
 
     }
 }

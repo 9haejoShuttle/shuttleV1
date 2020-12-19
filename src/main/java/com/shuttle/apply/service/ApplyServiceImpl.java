@@ -43,4 +43,11 @@ public class ApplyServiceImpl implements ApplyService {
     public Page<Apply> getApplyPageListByApplyId(Pageable pageable) {
         return applyRepository.getApplyPageListByApplyId(pageable);
     }
+
+    @Override
+    public Apply selectApply(long applyId) {
+        return applyRepository.findByApplyId(applyId);
+    }
+
+
 }
