@@ -7,6 +7,9 @@ import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 @SpringBootTest
 @Log4j2
@@ -51,6 +54,15 @@ class ApplyServiceTest {
         //게시글 pageable로 보여주기
     }
 
+    @Test
+    void getApplyListWithPagingInService(){
+        registerTestInService();
+        log.info(
+                applyService.getApplyPageListByApplyId(
+                        PageRequest.of(4,5, Sort.by("regdate").descending())
+                ).toList()
+        );
+    }
     @Test
     void deleteTestInService() {
         registerTestInService();

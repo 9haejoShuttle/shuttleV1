@@ -18,12 +18,14 @@ public class ApplyServiceImpl implements ApplyService {
 
     private final ApplyRepository applyRepository;
 
+    //Create
     @Override
     public Apply register(ApplyDTO applyDTO) {
         log.info(applyDTO.dataToDomain(applyDTO).toString());
         return applyRepository.save(applyDTO.dataToDomain(applyDTO));
     }
 
+    //Delete
     @Override
     public boolean remove(long applyId) {
         try {
@@ -33,10 +35,12 @@ public class ApplyServiceImpl implements ApplyService {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
-        }}
+        }
+    }
 
+    //getList
     @Override
-    public Page<Apply> getApplyPageList(Pageable pageable) {
+    public Page<Apply> getApplyPageListByApplyId(Pageable pageable) {
         return applyRepository.getApplyPageListByApplyId(pageable);
     }
 }

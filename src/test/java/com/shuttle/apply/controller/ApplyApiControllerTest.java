@@ -1,6 +1,5 @@
 package com.shuttle.apply.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shuttle.apply.dto.ApplyDTO;
 import com.shuttle.apply.service.ApplyService;
@@ -12,23 +11,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.sql.Time;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.stream.IntStream;
 
-import static com.shuttle.apply.dto.ApplyDTO.stirngToLocalDateTimeConverter;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -46,13 +37,13 @@ class ApplyApiControllerTest {
     @Autowired
     ApplyService applyService;
 
-    ApplyDTO makeDTO() {
+    ApplyDTO makeDTO(int i) {
         return ApplyDTO.builder()
-                .userId(1L)
-                .startAddr("서울시 성북구")
+                .userId(i)
+                .startAddr("서울시 성북구" + i)
                 .startLat(127.32415532d)
                 .startLng(37.123145362d)
-                .arrivalAddr("서울시 중구")
+                .arrivalAddr("서울시 중구" + i)
                 .arrivalLat(127.2554252525d)
                 .arrivalLng(34.1242145d)
                 .arrivalTime(710L)
@@ -68,23 +59,23 @@ class ApplyApiControllerTest {
         mockMvc.perform(post("/apply/register")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(new ObjectMapper().writeValueAsString(makeDTO())))
+                .content(new ObjectMapper().writeValueAsString(makeDTO(0))))
                 .andExpect(status().isOk());
 
     }
 
     @Test
     @DisplayName("등록작업 메서드 출력")
-    void runApplyRegisterAction(){
-        log.info(applyApiController.registerApplyAction(makeDTO()).toString());
+    void runApplyRegisterAction() {
+        log.info(applyApiController.registerApplyAction(makeDTO(0)).toString());
     }
 
     @Test
     @DisplayName("삭제작업 메서드 출력")
-    void runApplyRemoveAction(){
-        log.info(applyService.register(makeDTO()).toString());
-        long applyIdRegistered=applyService.register(makeDTO()).getApplyId();
-        log.info("Registered Id: "+applyIdRegistered);
+    void runApplyRemoveAction() {
+        log.info(applyService.register(makeDTO(0)).toString());
+        long applyIdRegistered = applyService.register(makeDTO(0)).getApplyId();
+        log.info("Registered Id: " + applyIdRegistered);
         log.info(applyApiController.removeApplyAction(applyIdRegistered).toString());
     }
 
@@ -93,14 +84,24 @@ class ApplyApiControllerTest {
     @DisplayName("삭제작업 테스트")
     void runApplyRemove() throws Exception {
 
-        long applyId=applyService.register(makeDTO()).getApplyId();
-        log.info("applyId: "+applyId);
+        long applyId = applyService.register(makeDTO(0)).getApplyId();
+        log.info("applyId: " + applyId);
 
         mockMvc.perform(delete("/apply/delete")
                 .with(csrf())
-                .param("applyId",applyId+""))
+                .param("applyId", applyId + ""))
                 .andExpect(status().isOk())
                 .andExpect(content().string("removeApplyAction success"));
+    }
+
+    @Test
+    @WithAccount("username")
+    @DisplayName("목록 페이징 테스트")
+    void runGetApplyListWithPaging() throws Exception {
+        IntStream.rangeClosed(1, 100).forEach(i -> applyApiController.registerApplyAction(makeDTO(i)));
+        mockMvc.perform(MockMvcRequestBuilders.get("/apply/list/{page}", 1)
+                .with(csrf()).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print());
     }
 
 

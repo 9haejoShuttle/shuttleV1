@@ -8,6 +8,6 @@ import org.springframework.data.domain.Pageable;
 public interface ApplyService {
     Apply register(ApplyDTO applyDTO);
     boolean remove(long applyId);
-    Page<Apply> getApplyPageList(Pageable pageable);
+    Page<Apply> getApplyPageListByApplyId(Pageable pageable);
 }
 
