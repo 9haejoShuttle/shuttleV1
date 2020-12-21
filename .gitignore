@@ -143,5 +143,5 @@ gradle-app.setting
 ### Gradle Patch ###
 **/build/
 
-# End of https://www.toptal.com/developers/gitignore/api/gradle,java,vscode,intellij+all
-application-oauth.properties
+# 아이포트 API Key
+ src/main/resources/application-iamport.properties
