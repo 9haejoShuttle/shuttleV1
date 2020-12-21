@@ -17,6 +17,7 @@ public class PostResponseDto {
     private String content;
     private Long userId;
 
+
     //엔티티를 DTO로 변환
     public PostResponseDto(Post post) {
         this.id = post.getId();
