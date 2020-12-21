@@ -19,9 +19,11 @@
  */
 package com.shuttle.apply.controller;
 
+import com.shuttle.apply.service.ApplyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RequiredArgsConstructor
@@ -29,8 +31,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Log4j2
 public class ApplyController {
 
-    @GetMapping("apply")
-    public void applyIndex() {
+    private final ApplyService applyService;
+
+    @GetMapping("/apply/main")
+    public void applyIndex(Model model) {
         log.info("applyIndex GET......................");
     }
 }

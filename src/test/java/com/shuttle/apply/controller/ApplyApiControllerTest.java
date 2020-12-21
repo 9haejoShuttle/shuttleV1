@@ -14,11 +14,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Objects;
 import java.util.stream.IntStream;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -99,8 +99,24 @@ class ApplyApiControllerTest {
     @DisplayName("목록 페이징 테스트")
     void runGetApplyListWithPaging() throws Exception {
         IntStream.rangeClosed(1, 100).forEach(i -> applyApiController.registerApplyAction(makeDTO(i)));
-        mockMvc.perform(MockMvcRequestBuilders.get("/apply/list/{page}", 1)
+        mockMvc.perform(get("/apply/list/{page}", 1)
                 .with(csrf()).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print());
+    }
+
+    @Test
+    @WithAccount("username")
+    @DisplayName("방금 등록한 페이지 불러오기")
+    void runSelectApply() throws Exception {
+        log.info("========================runSelectApplyTest========================");
+        long applyId= Long.parseLong(
+                Objects.requireNonNull(
+                        applyApiController.registerApplyAction(makeDTO(0)).getBody()
+                ).split(":")[1]);
+
+        log.info(applyApiController.read(applyId).toString());
+        mockMvc.perform(get("/apply/read/{applyId}", applyId)
+                .with(csrf()).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print());
     }
 

@@ -17,13 +17,12 @@ import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/apply/*")
 @Log4j2
 public class ApplyApiController {
 
     private final ApplyService applyService;
 
-    @GetMapping("/list/{page}")
+    @GetMapping("/apply/list/{page}")
     public Page<Apply> readApplyWithPageAction(@PathVariable @Valid final int page) {
         //추후 할 일
         final int SIZE = 10;
@@ -33,23 +32,23 @@ public class ApplyApiController {
     }
 
     //신청 내용 보내는 method Return 값이 없는데...
-    @GetMapping("/register")
+    @GetMapping("/apply/register")
     public void register() {
         log.info("register GET.................");
     }
 
-    @GetMapping("/complete")
+    @GetMapping("/apply/complete")
     private String complete() {
         return "applyComplete";
     }
 
-    @GetMapping("/read/{applyId}")
+    @GetMapping("/apply/read/{applyId}")
     public Apply read(@PathVariable("applyId") long applyId) {
         return applyService.selectApply(applyId);
     }
 
     //신청내용 등록 Post
-    @PostMapping("/register")
+    @PostMapping("/apply/register")
     public ResponseEntity<String> registerApplyAction(@RequestBody ApplyDTO applyDTO) {
         //start_addr/start_lng/start_lat
         //arrival_addr/arrival_lng/arrival_lat
@@ -65,7 +64,7 @@ public class ApplyApiController {
         return new ResponseEntity<>("registerApplyAction fail", HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/apply/delete")
     public ResponseEntity<String> removeApplyAction(@RequestParam("applyId") long applyId) {
         if (applyService.remove(applyId))
             return new ResponseEntity<>("removeApplyAction success", HttpStatus.OK);

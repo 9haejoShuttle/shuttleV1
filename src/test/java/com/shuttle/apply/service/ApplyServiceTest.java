@@ -49,9 +49,8 @@ class ApplyServiceTest {
     //테스트 미완성
     @Test
     void selectTestInService() {
-        //등록작업 후
-        registerTestInService();
-        //게시글 pageable로 보여주기
+        // TODO : 방금 등록한 서비스를 하나만 불러오는 테스트
+
     }
 
     @Test

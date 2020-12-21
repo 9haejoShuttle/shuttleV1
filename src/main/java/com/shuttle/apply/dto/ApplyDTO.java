@@ -44,7 +44,7 @@ public class ApplyDTO {
                 .arrivalAddr(applyDTO.arrivalAddr)
                 .arrivalLat(applyDTO.arrivalLat)
                 .arrivalLng(applyDTO.arrivalLng)
-                .arrivalTime(new Time(arrivalTime))
+                .arrivalTime(Time.valueOf((int)applyDTO.arrivalTime/100+":"+applyDTO.arrivalTime%100+":00"))
                 .memo(""+applyDTO.memo)
                 .regdate(stirngToLocalDateTimeConverter(applyDTO.regdate))
                 .build();

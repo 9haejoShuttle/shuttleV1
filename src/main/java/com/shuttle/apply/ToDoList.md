@@ -17,10 +17,11 @@
 
 ## ApplyDTO
 
--[ ] ApplyDTO dataToDomain의 ArrivalTime조정해주기
+-[X] ApplyDTO dataToDomain의 ArrivalTime조정해주기
     - 방법은 두가지가 있는데
         1. new Time 메서드의 Deprecated 생성자를 이용해주거나(하지만 이 방법은 맘에 들지 않다...)
         2. java.sql.Time 내의 다른 처리를 통하여 바로 Time 생성이 적용될 수 있도록 하자.(이쪽을 나는 좀더 권장)
+    -상위 목록에서 2번으로 성공 java.sql.Time.valueOf 메서드 참고
 
 ### 12월 18일 작업할 내용
 
@@ -30,8 +31,10 @@
 ### 12월 19일 작업할 내용
 
 - [x] pageable 만든 페이지 테스트
-- [ ] userId로 select해오는 페이지 만들기
 
+### 12월 21일 작업할 내용
+- [x] userId로 select해오는 페이지 만들기 및 테스트
+- [X] ApplyDTO dataToDomain의 ArrivalTime조정해주기
 ## 현재 내가 하고 싶은 것
 
 - [ ] Rest 방식으로 Apply Module 변경하기

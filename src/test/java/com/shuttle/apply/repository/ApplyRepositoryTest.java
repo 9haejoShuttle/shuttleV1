@@ -71,4 +71,5 @@ class ApplyRepositoryTest {
                 ).toList()
         );
     }
+
 }
