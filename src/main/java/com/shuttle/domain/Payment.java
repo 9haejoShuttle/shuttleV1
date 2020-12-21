@@ -47,5 +47,11 @@ public class Payment {
 
     private String pgType;
 
-    private boolean success;
+    private boolean success; //결제 성공 여부
+
+    private boolean cancel; //결제 취소 여부
+
+    public void setCancel() {
+        this.cancel = true;
+    }
 }
