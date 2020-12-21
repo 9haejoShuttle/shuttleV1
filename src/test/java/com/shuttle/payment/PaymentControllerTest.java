@@ -11,14 +11,17 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Transactional
 @AutoConfigureMockMvc
 @SpringBootTest
 class PaymentControllerTest {
@@ -57,12 +60,36 @@ class PaymentControllerTest {
         assertEquals(payment.isSuccess(), paymentCompleteResultDto.isSuccess());
     }
 
+    @DisplayName("결제 취소하기")
+    @WithAccount("01012341234")
+    @Test
+    void test_get_access_token() throws Exception {
+        //결제 내역 등록
+        Payment newPayment = paymentRepository.save(getPaymentCompleteResultDto().toEntity(null));
+
+        //결제 되면 취소 상태가 faslse임
+        assertFalse(newPayment.isCancel());
+
+        //취소 요청할 데이터
+        CancelPayRequestDto cancelPayRequestDto = new CancelPayRequestDto(1L, "none!!");
+        //취소 요청
+        mockMvc.perform(post("/payments/cancel")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(cancelPayRequestDto)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
+
+        //정상 취소 되었으면 True로 바뀌었아야 함.
+        assertTrue(newPayment.isCancel());
+    }
+
     private PaymentCompleteResultDto getPaymentCompleteResultDto() {
         return PaymentCompleteResultDto.builder()
                 .applyNum(Math.random()*1000 + "")
                 .buyerEmail("air@pot.com")
                 .cardQuaota(0)
-                .impUid(UUID.randomUUID().toString())
+                .impUid("imp_642034899587")
                 .merchantUid(UUID.randomUUID().toString())
                 .paidAmount(150000L)
                 .name("모두의 셔틀 탑승권")
