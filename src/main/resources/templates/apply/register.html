@@ -196,22 +196,13 @@
                 memo:"",
                 regdate: "" + date.toISOString()
         }
-            console.log(applyDTO)
+            console.log(applyDTO);
 
-            $.ajax({
-                type: 'POST',
-                url: '/apply/register',
-                contentType: 'application/json; charset=UTF-8',
-                data: JSON.stringify(applyDTO),
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader(header, token);
-                }
-            }).done(function (response) {
-                console.log(JSON.stringify(response))
-            }).fail(function (error) {
-                console.log(JSON.stringify(error));
-                console.log(error);
-            })
+            applyService.add(applyDTO, function (result){
+                console.log("RESULT: "+result);
+            });
+
+
         })
 
     });
