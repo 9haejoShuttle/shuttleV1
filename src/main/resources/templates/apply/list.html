@@ -3,14 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        .search_wrap .simple_search {
+            text-align: center;
+        }
+        .search_wrap .simple_search input {
+            border-radius: 25px 25px;
+            border: none;
+            vertical-align: middle;
+            font-size: 14px;
+            padding-left: 65px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        .search_bg{
+            color: #FFF;
+            background: #09165a;
+        }
+    </style>
 </head>
 <body>
-<div class="top_bg">
-    <div class="top_wrap">
+<div class="search_bg">
+    <div class="search_wrap">
         <p class="top_tt">
             기존의 통근 노선을 검색해보세요.
         </p>
-        <div class="top_search">
+        <div class="simple_search">
             <!-- 출발 정거장 찾기 -->
             <input type="text" name="start" class="start autocomplete-input" id="start" value=""
                    placeholder="출발지를 검색합니다." autocomplete="off"/>
@@ -41,10 +59,8 @@
         <option value="2020">20:20</option>
         <option value="2120">21:20</option>
     </select>
-    <input id="btn-way" name="btn-way" type="button" class="top_btn" style="width:120px" value="노선 조회" title="노선 조회"
-           onclick="SubmitForm()">
-    <input type="button" class="top_btn" style="width:100px; background-color:#2a2a4c" value="초기화" title="초기화"
-           onclick="location.href='ev_3people.aspx'">
+    <input id="btn-way" name="btn-way" type="button" class="top_btn" style="width:120px" value="노선 조회" title="노선 조회">
+    <input type="button" class="top_btn" style="width:100px" value="초기화" title="초기화">
 </div>
 
 </body>

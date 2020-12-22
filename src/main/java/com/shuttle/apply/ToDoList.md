@@ -37,7 +37,13 @@
 - [X] ApplyDTO dataToDomain의 ArrivalTime조정해주기
 
 ### 12월 22일 작업할 내용
-- [X] front 페이지 모듈화 하기 위한 js 작업 
+- [X] front 페이지 js 작업 
+
+### 12월 23일 작업할 내용
+Front 작업을 계획 하고 있다. 세부내용은 아래와 같음
+- [ ] rest로 back-end에서 보내주는 데이터 처리 js작업
+- [ ] list, 검색 모듈화 작업
+- [ ] 등록 모듈화 작업
 
 ## 현재 내가 하고 싶은 것
 
