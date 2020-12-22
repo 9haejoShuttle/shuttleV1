@@ -36,12 +36,8 @@
 - [x] userId로 select해오는 페이지 만들기 및 테스트
 - [X] ApplyDTO dataToDomain의 ArrivalTime조정해주기
 
-### 12월 21일 작업할 내용
-- [x] userId로 select해오는 페이지 만들기 및 테스트
-- [X] ApplyDTO dataToDomain의 ArrivalTime조정해주기
-
-### 12월 21일 작업할 내용
-- [ ] front페이지 모듈화 하기 위한 js작업 
+### 12월 22일 작업할 내용
+- [X] front 페이지 모듈화 하기 위한 js 작업 
 
 ## 현재 내가 하고 싶은 것
 
