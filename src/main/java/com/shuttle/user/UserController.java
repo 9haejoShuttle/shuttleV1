@@ -47,8 +47,9 @@ public class UserController {
 
     @GetMapping(URL_MYPAGE+"/payment")
     public void paymentForm(@CurrentUser User user, Model model) {
-        model.addAttribute("user", user);
-        model.addAttribute("paymentHistory", paymentService.findAll());
+        User findUser = userService.findUserWithPayments(user);
+        model.addAttribute("user", findUser);
+//        model.addAttribute("paymentHistory", findUser.getPayments());
     }
 
     @GetMapping("/login")

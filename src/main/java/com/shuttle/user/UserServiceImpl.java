@@ -73,6 +73,11 @@ public class UserServiceImpl implements UserService {
         return userTokenEqualsInputToken(targetUser, checkTokenRequestDto.getToken().trim());
     }
 
+    @Override
+    public User findUserWithPayments(User user) {
+        return userRepository.findByUserPaymentHistory(user.getId());
+    }
+
     private boolean userTokenEqualsInputToken(User targetUser, String token) {
         String userToken = targetUser.getForgotPasswordToken().trim();
         boolean equalsToken = Objects.isNull(userToken) ?  false : token.equals(userToken);

@@ -16,7 +16,7 @@ public class Payment {
     @Column(name = "PAYMENT_ID")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User user;
 
@@ -53,5 +53,10 @@ public class Payment {
 
     public void setCancel() {
         this.cancel = true;
+    }
+
+    public void addUser(User user) {
+        this.user = user;
+        //user.addPayments(this);
     }
 }
