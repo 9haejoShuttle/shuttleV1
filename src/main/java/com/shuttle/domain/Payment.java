@@ -51,8 +51,11 @@ public class Payment {
 
     private boolean cancel; //결제 취소 여부
 
+    private LocalDateTime cancelDate;
+
     public void setCancel() {
         this.cancel = true;
+        cancelDate = LocalDateTime.now();
     }
 
     public void addUser(User user) {
