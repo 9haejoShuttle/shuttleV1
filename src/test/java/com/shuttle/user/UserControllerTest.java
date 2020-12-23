@@ -62,6 +62,7 @@ class UserControllerTest {
 
     @AfterEach
     void deleteUser() {
+        userDetailRepository.deleteAll();
         userRepository.deleteAll();
     }
 

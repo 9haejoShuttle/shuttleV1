@@ -39,8 +39,8 @@ public class User {
     @Column(nullable = true)
     private boolean tokenVerified;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private UserDetail userDetail;
+//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private UserDetail userDetail;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Payment> payments = new ArrayList<>();
@@ -58,13 +58,13 @@ public class User {
         this.role = Role.USER;
     }
 
-    public void updateLastLoginTimeInUserDetail() {  //로그인 시 UserDetail 자동 추가
-        if (Objects.isNull(this.getUserDetail())) {
-            this.userDetail = new UserDetail(this);
-        }
-
-        this.getUserDetail().setLoginDate(LocalDateTime.now());
-    }
+//    public void updateLastLoginTimeInUserDetail() {  //로그인 시 UserDetail 자동 추가
+//        if (Objects.isNull(this.getUserDetail())) {
+//            this.userDetail = new UserDetail(this);
+//        }
+//
+//        this.getUserDetail().setLoginDate(LocalDateTime.now());
+//    }
 
     public String getRoleKey() {
         return this.role.getKey();
@@ -90,10 +90,5 @@ public class User {
 
     public void setTokenVerified(boolean tokenVerified) {
         this.tokenVerified = tokenVerified;
-    }
-
-    public void addPayments(Payment payment) {
-          this.payments.add(payment);
-//        payment.addUser(this);
     }
 }
