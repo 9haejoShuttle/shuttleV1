@@ -36,3 +36,40 @@
     position: relative;
     overflow: hidden;
 }
+
+/*노선 검색을 위한 css*/
+.search_wrap .search_text {
+    margin: auto;
+    color: #FFF;
+    text-align: center;
+    line-height: 1.4em;
+    word-break: keep-all;
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+}
+.search_wrap {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    margin: auto;
+}
+.search_wrap .simple_search {
+    text-align: center;
+}
+.search_wrap .simple_search input {
+    height: 26px;
+    border-radius: 25px 25px;
+    border: none;
+    vertical-align: middle;
+    font-size: 14px;
+    padding-left: 65px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+.search_bg{
+    color: #FFF;
+    background: #09165a;
+}

@@ -3,29 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <style>
-        .search_wrap .simple_search {
-            text-align: center;
-        }
-        .search_wrap .simple_search input {
-            border-radius: 25px 25px;
-            border: none;
-            vertical-align: middle;
-            font-size: 14px;
-            padding-left: 65px;
-            box-sizing: border-box;
-            margin-bottom: 10px;
-        }
-        .search_bg{
-            color: #FFF;
-            background: #09165a;
-        }
-    </style>
+    <!--css링크 href="../css/apply.css" 로 추후 수정예정. 현재 html에서 바로 적용해서 보기 위해 임시로 걸어둔 링크 -->
+<!--    <link rel="stylesheet" type="text/css" href="../css/apply.css">-->
+        <link rel="stylesheet" type="text/css" href="../../static/css/apply.css">
 </head>
 <body>
 <div class="search_bg">
     <div class="search_wrap">
-        <p class="top_tt">
+        <p class="search_text">
             기존의 통근 노선을 검색해보세요.
         </p>
         <div class="simple_search">
@@ -42,7 +27,7 @@
 
 <div class="search_btn">
 
-    <select id="eTime" name="eTime" class="top_sel">
+    <select id="arrivalTime" name="arrivalTime" class="top_sel">
         <option value="0" selected="">도착시간 선택</option>
         <option value="710">7:10</option>
         <option value="740">7:40</option>
@@ -59,8 +44,8 @@
         <option value="2020">20:20</option>
         <option value="2120">21:20</option>
     </select>
-    <input id="btn-way" name="btn-way" type="button" class="top_btn" style="width:120px" value="노선 조회" title="노선 조회">
-    <input type="button" class="top_btn" style="width:100px" value="초기화" title="초기화">
+    <input id="btnSearchRoute" name="btnSearchRoute" type="button" class="btnRoute" style="width:120px" value="노선 조회" title="노선 조회">
+    <input type="button" class="btnRoute" style="width:100px" value="초기화" title="초기화">
 </div>
 
 </body>

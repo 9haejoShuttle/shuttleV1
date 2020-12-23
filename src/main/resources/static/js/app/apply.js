@@ -34,9 +34,37 @@ let applyService = (() => {
         })
     }
 
+    function read(param, callback, error) {
+        $.getJSON("/apply/read/" + param.applyId + ".json",
+            function (data) {
+                if (callback) {
+                    callback(data);
+                }
+            }).fail(function (xhr, status, err){
+            if(error){
+                error();
+            }
+        })
+    }
+
+    function remove(param){
+        $.ajax({
+            type: 'delete',
+            url: '/apply/delete/'+param.applyId,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token);
+            }
+        }).done(function (response) {
+            console.log(JSON.stringify(response))
+        }).fail(function (error) {
+            console.log(JSON.stringify(error));
+            console.log(error);
+        });
+    }
     return {
         add: add,
-        getList: getList
-
+        getList: getList,
+        read: read,
+        remove: remove
     };
 })();
