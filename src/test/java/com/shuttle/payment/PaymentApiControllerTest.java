@@ -2,6 +2,7 @@ package com.shuttle.payment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shuttle.domain.Payment;
+import com.shuttle.user.UserRepository;
 import com.shuttle.user.util.WithAccount;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,17 +19,19 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Transactional
 @AutoConfigureMockMvc
 @SpringBootTest
-class PaymentControllerTest {
+public class PaymentApiControllerTest {
 
     @Autowired MockMvc mockMvc;
     @Autowired ObjectMapper objectMapper;
     @Autowired PaymentRepository paymentRepository;
+    @Autowired UserRepository userRepository;
 
     @AfterEach
     void deleteAll() {
@@ -42,7 +45,7 @@ class PaymentControllerTest {
         PaymentCompleteResultDto paymentCompleteResultDto
                 = getPaymentCompleteResultDto();
 
-        mockMvc.perform(post("/payments/complete")
+        mockMvc.perform(post("/api/payment")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(paymentCompleteResultDto)))
@@ -65,15 +68,17 @@ class PaymentControllerTest {
     @Test
     void test_get_access_token() throws Exception {
         //결제 내역 등록
-        Payment newPayment = paymentRepository.save(getPaymentCompleteResultDto().toEntity(null));
+        Payment entity = getPaymentCompleteResultDto().toEntity();
+        entity.addUser(userRepository.findByPhone("01012341234").get());
+        Payment newPayment = paymentRepository.save(entity);
 
         //결제 되면 취소 상태가 faslse임
         assertFalse(newPayment.isCancel());
 
         //취소 요청할 데이터
-        CancelPayRequestDto cancelPayRequestDto = new CancelPayRequestDto(1L, "none!!");
+        CancelPayRequestDto cancelPayRequestDto = new CancelPayRequestDto(newPayment.getId(), "none!!");
         //취소 요청
-        mockMvc.perform(post("/payments/cancel")
+        mockMvc.perform(put("/api/payment")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(cancelPayRequestDto)))
@@ -84,7 +89,7 @@ class PaymentControllerTest {
         assertTrue(newPayment.isCancel());
     }
 
-    private PaymentCompleteResultDto getPaymentCompleteResultDto() {
+    public static PaymentCompleteResultDto getPaymentCompleteResultDto() {
         return PaymentCompleteResultDto.builder()
                 .applyNum(Math.random()*1000 + "")
                 .buyerEmail("air@pot.com")

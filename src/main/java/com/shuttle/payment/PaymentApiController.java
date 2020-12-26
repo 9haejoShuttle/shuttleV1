@@ -13,7 +13,7 @@ import java.util.*;
 
 @RequiredArgsConstructor
 @RestController
-public class PaymentController {
+public class PaymentApiController {
 
     private final PaymentService paymentService;
     private final PaymentRepository paymentRepository;
@@ -23,7 +23,7 @@ public class PaymentController {
     @Value("${imp_secret}")
     private String imp_secret;
 
-    @PostMapping("/payments/complete")
+    @PostMapping("/api/payment")
     public ResponseEntity paymentComplete(@CurrentUser User user, @RequestBody PaymentCompleteResultDto paymentResult) {
         paymentService.save(user, paymentResult);
         return ResponseEntity.ok().build();
@@ -32,7 +32,7 @@ public class PaymentController {
     /*
     *  reference : https://docs.iamport.kr/implementation/cancel?lang=ko
     * */
-    @PostMapping("/payments/cancel")
+    @PutMapping("/api/payment")
     public ResponseEntity paymentCancel(@RequestBody CancelPayRequestDto cancelPayRequestDto) {
         //TODO 어떻게 이걸 보기 좋게 수정할 것인가...
         Payment targetPaymented = paymentRepository.findById(cancelPayRequestDto.getId())
@@ -82,7 +82,6 @@ public class PaymentController {
         LinkedHashMap responseBody = (LinkedHashMap) responseData.getBody();
 
         LinkedHashMap responseBodyProps = (LinkedHashMap) responseBody.get("response");
-
 
         String accessToken = (String) responseBodyProps.get("access_token");
 

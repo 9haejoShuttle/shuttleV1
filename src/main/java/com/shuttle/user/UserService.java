@@ -17,4 +17,6 @@ public interface UserService extends UserDetailsService {
     String sendToken(String phoneNumber);
 
     boolean checkToken(CheckTokenRequestDto checkTokenRequestDto);
+
+    User findUserWithPayments(User user);
 }

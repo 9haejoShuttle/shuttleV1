@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Getter @AllArgsConstructor @NoArgsConstructor
@@ -37,8 +39,11 @@ public class User {
     @Column(nullable = true)
     private boolean tokenVerified;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private UserDetail userDetail;
+//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private UserDetail userDetail;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Payment> payments = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -53,13 +58,13 @@ public class User {
         this.role = Role.USER;
     }
 
-    public void updateLastLoginTimeInUserDetail() {  //로그인 시 UserDetail 자동 추가
-        if (Objects.isNull(this.getUserDetail())) {
-            this.userDetail = new UserDetail(this);
-        }
-
-        this.getUserDetail().setLoginDate(LocalDateTime.now());
-    }
+//    public void updateLastLoginTimeInUserDetail() {  //로그인 시 UserDetail 자동 추가
+//        if (Objects.isNull(this.getUserDetail())) {
+//            this.userDetail = new UserDetail(this);
+//        }
+//
+//        this.getUserDetail().setLoginDate(LocalDateTime.now());
+//    }
 
     public String getRoleKey() {
         return this.role.getKey();

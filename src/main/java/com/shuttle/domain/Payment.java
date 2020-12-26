@@ -16,7 +16,7 @@ public class Payment {
     @Column(name = "PAYMENT_ID")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User user;
 
@@ -51,7 +51,15 @@ public class Payment {
 
     private boolean cancel; //결제 취소 여부
 
+    private LocalDateTime cancelDate;
+
     public void setCancel() {
         this.cancel = true;
+        cancelDate = LocalDateTime.now();
+    }
+
+    public void addUser(User user) {
+        this.user = user;
+        //user.addPayments(this);
     }
 }

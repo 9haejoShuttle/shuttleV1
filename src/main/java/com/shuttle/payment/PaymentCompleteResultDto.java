@@ -11,7 +11,6 @@ import java.util.TimeZone;
 
 @Getter @Setter @ToString @Builder
 public class PaymentCompleteResultDto {
-    private User user;
     private String applyNum;
     private String buyerEmail;
     private int cardQuaota;
@@ -26,9 +25,7 @@ public class PaymentCompleteResultDto {
     private String pgType;
     private boolean success;
 
-    public Payment toEntity(User user) {
-
-//        Timestamp unixTime = Timestamp.valueOf(paidAt);
+    public Payment toEntity() {
 
         long epochtime = Long.parseLong(paidAt);
 
@@ -36,9 +33,7 @@ public class PaymentCompleteResultDto {
                 LocalDateTime.ofInstant(Instant.ofEpochSecond(epochtime),
                         TimeZone.getDefault().toZoneId());
 
-
         return Payment.builder()
-                .user(user)
                 .applyNum(applyNum)
                 .buyerEmail(buyerEmail)
                 .cardQuaota(cardQuaota)
