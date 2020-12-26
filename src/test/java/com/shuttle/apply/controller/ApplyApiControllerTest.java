@@ -115,7 +115,7 @@ class ApplyApiControllerTest {
                         applyApiController.registerApplyAction(makeDTO(0)).getBody()
                 ).split(":")[1]);
 
-        log.info(applyApiController.read(applyId).toString());
+        log.info(applyApiController.readApply(applyId).toString());
         mockMvc.perform(get("/apply/read/{applyId}", applyId)
                 .with(csrf()).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print());

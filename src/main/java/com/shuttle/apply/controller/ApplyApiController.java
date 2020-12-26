@@ -32,23 +32,13 @@ public class ApplyApiController {
     }
 
     //신청 내용 보내는 method Return 값이 없는데...
-    @GetMapping("/apply/register")
-    public void register() {
-        log.info("register GET.................");
-    }
-
-    @GetMapping("/apply/complete")
-    private String complete() {
-        return "applyComplete";
-    }
-
-    @GetMapping("/apply/read/{applyId}")
-    public Apply read(@PathVariable("applyId") long applyId) {
+    @GetMapping("/apply/{applyId}")
+    public Apply readApply(@PathVariable("applyId") long applyId) {
         return applyService.selectApply(applyId);
     }
 
     //신청내용 등록 Post
-    @PostMapping("/apply/register")
+    @PostMapping("/apply")
     public ResponseEntity<String> registerApplyAction(@RequestBody ApplyDTO applyDTO) {
         //start_addr/start_lng/start_lat
         //arrival_addr/arrival_lng/arrival_lat
@@ -64,8 +54,8 @@ public class ApplyApiController {
         return new ResponseEntity<>("registerApplyAction fail", HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("/apply/delete")
-    public ResponseEntity<String> removeApplyAction(@RequestParam("applyId") long applyId) {
+    @DeleteMapping("/apply/{applyId}")
+    public ResponseEntity<String> removeApplyAction(@PathVariable("applyId") long applyId) {
         if (applyService.remove(applyId))
             return new ResponseEntity<>("removeApplyAction success", HttpStatus.OK);
 
