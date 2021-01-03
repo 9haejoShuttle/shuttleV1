@@ -22,8 +22,8 @@ public class ApplyApiController {
 
     private final ApplyService applyService;
 
-    @GetMapping("/apply/list/{page}")
-    public Page<Apply> readApplyWithPageAction(@PathVariable @Valid final int page) {
+    @GetMapping("/apply")
+    public Page<Apply> readApplyWithPageAction(@RequestParam @Valid final int page) {
         //추후 할 일
         final int SIZE = 10;
         Pageable pageable = PageRequest.of(page, SIZE, Sort.by("regdate").descending());
