@@ -8,14 +8,14 @@
     <title>결제</title>
 </head>
 <body>
-
 <div class="container">
     <div>
     <h2>결제할 노선</h2>
         <button id="btn-payment" class="btn btn-outline-success">결제하기</button>
     </div>
+
     <div>
-    <h2 th:text="${user.name} + '님의 결제 내역'"></h2>
+        <h2 th:text="${user.name} + '님의 결제 내역'"></h2>
         <table class="table table-hover">
             <thead class="table-dark">
                 <tr>
@@ -26,138 +26,165 @@
                     <th>결제일</th>
                     <th>할부</th>
                     <th>결제 취소</th>
+                    <th>취소일</th>
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="payment : ${paymentHistory}" class="payment-row">
+                <tr th:each="payment : ${payments}" class="payment-row">
                     <td class="payment-id" th:text="${payment.id}"></td>
                     <td th:text="${payment.name}"></td>
                     <td th:text="${payment.paidAmount}"></td>
                     <td th:text="${payment.payMethod}"></td>
-                    <td th:text="${payment.paidAt}"></td>
                     <td th:text="${payment.cardQuaota}"></td>
+                    <td th:text="${#temporals.format(payment.paidAt, 'yyyy-MM-dd HH:mm')}"></td>
                     <td th:if="${!payment.cancel}">
                         <a href="" class="btn-cancelPay">결제 취소</a>
                     </td>
                     <td th:if="${payment.cancel}">
                         <span>취소된 내역</span>
                     </td>
+                    <td>--</td>
                 </tr>
             </tbody>
         </table>
     </div>
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:if="${!payments.isFirst() && !payments.hasPrevious()}">
+                <a class="page-link" th:href="@{'/mypage/payment?page='+${payments.getNumber() - 1}}">Previous</a>
+            </li>
+            <li class="page-item" th:classappend="${i == payments.getNumber()}? active"
+                th:each="i: ${#numbers.sequence(0, payments.getTotalPages() - 1)}">
+                <a class="page-link" th:href="@{'/mypage/payment?page=' + ${i}}" th:text="${i+1}"></a>
+            </li>
+            <li class="page-item" th:if="${!payments.isLast() && !payments.hasNext()}">
+                <a class="page-link" th:href="@{'/mypage/payment?page='+${payments.getNumber() + 1}}">Next</a>
+            </li>
+        </ul>
+    </nav>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"
         integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
         crossorigin="anonymous"></script>
 <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
 
 <script>
-    const btnPayment = document.getElementById('btn-payment');
-    let btnCancelPayment = document.querySelectorAll('.payment-row');
     const header = document.getElementsByName('_csrf_header')[0].content;
     const token = document.getElementsByName('_csrf')[0].content;
 
-    btnPayment.addEventListener('click', () => {
-        IMP.init("imp30641138");
-        IMP.request_pay({
-            pg : 'inicis',
-            pay_method : 'card',
-            merchant_uid : 'merchant_' + new Date().getTime(),
-            name : '모두의 셔틀 결제 서비스',
-            amount : 100,
-            buyer_email : 'iamport@siot.do',
-            buyer_name : 'testUser',
-            buyer_tel : '010-1234-5678',
-            buyer_addr : '서울특별시 강남구 삼성동',
-            buyer_postcode : '123-456'
-        }, function(rsp) {
-            if ( rsp.success ) {
-                console.log('success');
-                console.log(rsp);
-                console.log(rsp.success);
-                //[1] 서버단에서 결제정보 조회를 위해 jQuery ajax로 imp_uid 전달하기
-                $.ajax({
-                    url: "/payments/complete", //cross-domain error가 발생하지 않도록 동일한 도메인으로 전송
-                    contentType: "application/json; charset=utf-8",
-                    type: 'POST',
-                    dataType: 'json',
-                    data: JSON.stringify({
-                        applyNum : rsp.apply_num,
-                        buyerEmail : rsp.buyer_email,
-                        cardQuaota : rsp.card_quaota,
-                        impUid : rsp.imp_uid,
-                        merchantUid : rsp.merchant_uid,
-                        name : rsp.name,
-                        paidAmount : rsp.paid_amount,
-                        paidAt : rsp.paid_at,
-                        payMethod : rsp.pay_method,
-                        provider : rsp.pg_provider,
-                        pgTid : rsp.pg_tid,
-                        pgType : rsp.pg_type,
-                        success : rsp.success
-                    }),
-                    beforeSend : function (xhr) {
-                        xhr.setRequestHeader(header, token);
-                    }
-                }).done(function(data) {
-                    //[2] 서버에서 REST API로 결제정보확인 및 서비스루틴이 정상적인 경우
-                    if ( everythings_fine ) {
-                        var msg = '결제가 완료되었습니다.';
-                        msg += '\n고유ID : ' + rsp.imp_uid;
-                        msg += '\n상점 거래ID : ' + rsp.merchant_uid;
-                        msg += '\결제 금액 : ' + rsp.paid_amount;
-                        msg += '카드 승인번호 : ' + rsp.apply_num;
+    const listener = {
+        init: function () {
+            const btnPayment = document.getElementById('btn-payment');
+            let btnCancelPayment = document.querySelectorAll('.payment-row');
 
-                        alert(msg);
-                    } else {
-                        //[3] 아직 제대로 결제가 되지 않았습니다.
-                        //[4] 결제된 금액이 요청한 금액과 달라 결제를 자동취소처리하였습니다.
-                    }
-                });
-            } else {
-                var msg = '결제에 실패하였습니다.';
-                msg += '에러내용 : ' + rsp.error_msg;
+            IMP.init("imp30641138");
 
-                alert(msg);
-            }
-        });
-    }); //payment listener
+            btnPayment.addEventListener('click', () => {
+                this.paymentListener();
+            }); //payment listener
 
-    //결제 취소
-    btnCancelPayment.forEach((btn) => {
+            //결제 취소
+            btnCancelPayment.forEach((btn) => {
+                this.cancelPaymentListener(btn);
+            });
 
-        const existAtag = !btn.getElementsByTagName('a').length == 0;
-
-        if (existAtag) {
-            let btnCancelPay = btn.querySelector('.btn-cancelPay');
-
-            btnCancelPay.addEventListener('click', () => {
-                let paymentId = btn.querySelector('.payment-id').textContent;
-                if (confirm('결제를 취소하겠습니까?')) {
+        }, //init()
+        paymentListener : function () {
+            IMP.request_pay({
+                pg : 'inicis',
+                pay_method : 'card',
+                merchant_uid : 'merchant_' + new Date().getTime(),
+                name : '모두의 셔틀 결제 서비스',
+                amount : 100,
+                buyer_email : 'iamport@siot.do',
+                buyer_name : 'testUser',
+                buyer_tel : '010-1234-5678',
+                buyer_addr : '서울특별시 강남구 삼성동',
+                buyer_postcode : '123-456'
+            }, function(rsp) {
+                if ( rsp.success ) {
+                    //[1] 서버단에서 결제정보 조회를 위해 jQuery ajax로 imp_uid 전달하기
                     $.ajax({
-                        url: "/payments/cancel",
-                        type: "POST",
-                        contentType: "application/json",
-                        dataType: "JSON",
+                        url: "/api/payment", //cross-domain error가 발생하지 않도록 동일한 도메인으로 전송
+                        contentType: "application/json; charset=utf-8",
+                        type: 'POST',
+                        dataType: 'json',
                         data: JSON.stringify({
-                            "id": paymentId, // 환불금액
-                            "reason": "테스트 결제환불 " // 환불사유
+                            applyNum : rsp.apply_num,
+                            buyerEmail : rsp.buyer_email,
+                            cardQuaota : rsp.card_quaota,
+                            impUid : rsp.imp_uid,
+                            merchantUid : rsp.merchant_uid,
+                            name : rsp.name,
+                            paidAmount : rsp.paid_amount,
+                            paidAt : rsp.paid_at,
+                            payMethod : rsp.pay_method,
+                            provider : rsp.pg_provider,
+                            pgTid : rsp.pg_tid,
+                            pgType : rsp.pg_type,
+                            success : rsp.success
                         }),
-                        beforeSend: function (xhr) {
+                        beforeSend : function (xhr) {
                             xhr.setRequestHeader(header, token);
                         }
                     }).done(function (response) {
-                        console.log(response);
-                        alert('success');
-                    }).fail(function (error) {
-                        console.log(error);
-                        alert('error')
-                    });
+                        alert('helo');
+                    })
+                } else {
+                    var msg = '결제에 실패하였습니다.';
+                    msg += '에러내용 : ' + rsp.error_msg;
+
+                    alert(msg);
                 }
-            }); //cancelListener
-        } //if(existAtag)
-    });
+                alert("결제 되었습니다😄");
+                location.href='/mypage/payment';
+            });
+        }, // 결제
+
+        cancelPaymentListener : function (btn) {
+            const existAtag = !btn.getElementsByTagName('a').length == 0;
+
+            if (existAtag) {
+                let btnCancelPay = btn.querySelector('.btn-cancelPay');
+
+                btnCancelPay.addEventListener('click', () => {
+                    let paymentId = btn.querySelector('.payment-id').textContent;
+                    if (confirm('결제를 취소하겠습니까?')) {
+                        $.ajax({
+                            url: "/api/payment",
+                            type: "PUT",
+                            contentType: "application/json",
+                            dataType: "JSON",
+                            data: JSON.stringify({
+                                "id": paymentId, // 환불금액
+                                "reason": "테스트 결제환불 " // 환불사유
+                            }),
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader(header, token);
+                            },
+                            success: function (rsp) {
+                                alert(rsp);
+                            }
+                        }).done(function (response) {
+                            console.log(response);
+                            alert('success');
+                        }).fail(function (error) {
+                            console.log(error);
+                            alert('error')
+                        });
+
+                        //done함수가 작동하지 않아서 임시로 메세지 띄워줌.
+                        alert('취소 되었습니다.');
+                        //location.href='/mypage/payment';
+                    }
+                }); //cancelListener
+            } //if(existAtag)
+        } //결제 취소
+    } //listener()
+
+    listener.init();
+
 </script>
 </body>
 </html>

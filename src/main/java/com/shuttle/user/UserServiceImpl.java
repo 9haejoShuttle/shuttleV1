@@ -1,6 +1,7 @@
 package com.shuttle.user;
 
 import com.shuttle.domain.User;
+import com.shuttle.domain.UserDetail;
 import com.shuttle.user.dto.CheckTokenRequestDto;
 import com.shuttle.user.dto.PasswordUpdateRequestDto;
 import com.shuttle.user.dto.UserAccount;
@@ -17,8 +18,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 @Log4j2
@@ -28,6 +31,7 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserDetailRepository userDetailRepository;
 
     @Override
     public String signup(UserSignupRequestDto userSignupRequestDto) {
@@ -73,6 +77,11 @@ public class UserServiceImpl implements UserService {
         return userTokenEqualsInputToken(targetUser, checkTokenRequestDto.getToken().trim());
     }
 
+    @Override
+    public User findUserWithPayments(User user) {
+        return userRepository.findByUserPaymentHistory(user.getId());
+    }
+
     private boolean userTokenEqualsInputToken(User targetUser, String token) {
         String userToken = targetUser.getForgotPasswordToken().trim();
         boolean equalsToken = Objects.isNull(userToken) ?  false : token.equals(userToken);
@@ -105,9 +114,20 @@ public class UserServiceImpl implements UserService {
         }
 
         //최근 로그인 시간 갱신
-        loginUser.updateLastLoginTimeInUserDetail();
+        lastLoginTimeUpdate(loginUser);
 
         return new UserAccount(loginUser);
+    }
+
+    private void lastLoginTimeUpdate(User loginUser) {
+        Optional<UserDetail> findByUserDetail = userDetailRepository.findByUser(loginUser);
+
+        if (findByUserDetail.isEmpty()) {
+            userDetailRepository.save(new UserDetail(loginUser));
+        } else {
+            findByUserDetail.get().setLoginDate(LocalDateTime.now());
+        }
+
     }
 
     private boolean disableUser(User loginUser) {

@@ -25,6 +25,7 @@ public class UserDetail {
 
     public UserDetail(User user) {
         this.user = user;
+        loginDate = LocalDateTime.now();
     }
 
 }

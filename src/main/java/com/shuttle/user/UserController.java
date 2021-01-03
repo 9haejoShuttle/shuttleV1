@@ -1,5 +1,6 @@
 package com.shuttle.user;
 
+import com.shuttle.domain.Payment;
 import com.shuttle.domain.User;
 import com.shuttle.payment.PaymentService;
 import com.shuttle.user.dto.CheckTokenRequestDto;
@@ -8,6 +9,11 @@ import com.shuttle.user.dto.UserSignupRequestDto;
 import com.shuttle.user.validator.PasswordUpdateValidator;
 import com.shuttle.user.validator.SignupValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,6 +23,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
@@ -46,9 +53,21 @@ public class UserController {
     }
 
     @GetMapping(URL_MYPAGE+"/payment")
-    public void paymentForm(@CurrentUser User user, Model model) {
+    public String paymentForm(@CurrentUser User user, @PageableDefault(size = 10, page = 0, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+                            Model model) {
+        /*
+        *       select가 총 세 번 날아간다.
+        *       1. SELECT p.* FROM PAYMENT p WHERE p.user_id = ?
+        *       2. SELECT COUNT(payment_id) FROM PAYMENT WHERE p.user_id = ?
+        *       3. SELECT u.* FROM USER u WHERE u.id = ?
+        * */
+        Page<Payment> paymentsWithUser =
+                paymentService.findAllPaymentsAndUser(user, pageable);
+
+        model.addAttribute("payments", paymentsWithUser);
         model.addAttribute("user", user);
-        model.addAttribute("paymentHistory", paymentService.findAll());
+
+        return "mypage/payment";
     }
 
     @GetMapping("/login")
